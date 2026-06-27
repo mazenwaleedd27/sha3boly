@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useGame } from "@/lib/game-store";
 import { PopButton } from "@/components/GameCard";
+import logo from "@/assets/logo.png.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
