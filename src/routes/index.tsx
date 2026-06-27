@@ -111,6 +111,11 @@ function Home() {
         <p className="mt-6 text-center text-sm text-muted-foreground">
           مرّروا الموبايل بين اللاعبين بعد كل دور
         </p>
+
+        <div className="mt-8 rounded-3xl border-2 border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/10 p-5 text-center shadow-lg">
+          <p className="text-lg font-black text-ink">✨ أنا اللي عملتها ✨</p>
+          <p className="mt-1 text-base font-bold text-primary">👨‍💻 المهندس مازن وليد</p>
+        </div>
       </div>
     </main>
   );
