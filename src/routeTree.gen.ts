@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ModesRouteImport } from './routes/modes'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlayModeRouteImport } from './routes/play.$mode'
 
 const ModesRoute = ModesRouteImport.update({
   id: '/modes',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayModeRoute = PlayModeRouteImport.update({
+  id: '/play/$mode',
+  path: '/play/$mode',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/modes': typeof ModesRoute
+  '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/modes': typeof ModesRoute
+  '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/modes': typeof ModesRoute
+  '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/modes'
+  fullPaths: '/' | '/modes' | '/play/$mode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/modes'
-  id: '__root__' | '/' | '/modes'
+  to: '/' | '/modes' | '/play/$mode'
+  id: '__root__' | '/' | '/modes' | '/play/$mode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ModesRoute: typeof ModesRoute
+  PlayModeRoute: typeof PlayModeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/$mode': {
+      id: '/play/$mode'
+      path: '/play/$mode'
+      fullPath: '/play/$mode'
+      preLoaderRoute: typeof PlayModeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ModesRoute: ModesRoute,
+  PlayModeRoute: PlayModeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
