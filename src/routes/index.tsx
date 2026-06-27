@@ -43,9 +43,11 @@ function Home() {
       <div className="card-splash absolute inset-x-0 top-0 -z-0 h-72 opacity-90" />
       <div className="relative mx-auto max-w-md px-5 pt-10 pb-20">
         <header className="mb-8 text-center">
-          <div className="mx-auto mb-3 inline-flex h-24 w-24 items-center justify-center rounded-full border-[6px] border-white bg-accent shadow-xl">
-            <span className="text-4xl">🎉</span>
-          </div>
+          <img
+            src={logo.url}
+            alt="شعول"
+            className="mx-auto mb-4 h-44 w-44 rounded-full border-[6px] border-white shadow-2xl"
+          />
           <h1 className="text-5xl font-black text-white drop-shadow-[0_3px_0_rgba(0,0,0,0.3)]">
             كلمة وحرف
           </h1>
