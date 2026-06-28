@@ -2,15 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useGame } from "@/lib/game-store";
 import { PopButton } from "@/components/GameCard";
-import logo from "@/assets/logo.png.asset.json";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "كلمة وحرف — لعبة الجماعة" },
-      { name: "description", content: "العب لعبة كلمة وحرف من موبايل واحد مع أصحابك. مزاد، بقاء للأسرع، بينج بونج، هاتريك، وسلسلة." },
-      { property: "og:title", content: "كلمة وحرف — لعبة الجماعة" },
+      { title: "شعبولي — لعبة الجماعة" },
+      { name: "description", content: "العب شعبولي من موبايل واحد مع أصحابك. مزاد، بقاء للأسرع، بينج بونج، هاتريك، وسلسلة." },
+      { property: "og:title", content: "شعبولي — لعبة الجماعة" },
       { property: "og:description", content: "موبايل واحد، تحديات سريعة، كروت قوة وتلبيس، وضحك مالوش آخر." },
     ],
   }),
@@ -41,17 +39,10 @@ function Home() {
   return (
     <main className="min-h-dvh bg-background">
       <div className="card-splash absolute inset-x-0 top-0 -z-0 h-72 opacity-90" />
-      <div className="relative mx-auto max-w-md px-5 pt-10 pb-20">
-        <header className="mb-8 text-center">
-          <img
-            src={logo.url}
-            alt="شعول"
-            className="mx-auto mb-4 h-44 w-44 rounded-full border-[6px] border-white shadow-2xl"
-          />
-          <h1 className="text-5xl font-black text-white drop-shadow-[0_3px_0_rgba(0,0,0,0.3)]">
-            كلمة وحرف
-          </h1>
-          <p className="mt-2 text-white/95 font-bold text-lg drop-shadow">
+      <div className="relative mx-auto max-w-md px-5 pt-12 pb-20">
+        <header className="mb-10 text-center">
+          <h1 className="neon-title font-display">شعبولي</h1>
+          <p className="mt-3 text-white/95 font-bold text-lg drop-shadow">
             موبايل واحد · كذا لاعب · ضحك ومنافسة
           </p>
         </header>
@@ -111,11 +102,6 @@ function Home() {
         <p className="mt-6 text-center text-sm text-muted-foreground">
           مرّروا الموبايل بين اللاعبين بعد كل دور
         </p>
-
-        <div className="mt-8 rounded-3xl border-2 border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/10 p-5 text-center shadow-lg">
-          <p className="text-lg font-black text-ink">✨ أنا اللي عملتها ✨</p>
-          <p className="mt-1 text-base font-bold text-primary">👨‍💻 المهندس مازن وليد</p>
-        </div>
       </div>
     </main>
   );
