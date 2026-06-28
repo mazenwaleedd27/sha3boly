@@ -100,22 +100,28 @@ function DrawCard({
   badge: string;
 }) {
   return (
-    <GameCard
-      badge={<span className="text-center text-[10px] font-black leading-tight text-ink">{badge}</span>}
-      footer={<p className="font-display text-lg font-bold text-ink">{topic.hint}{letter ? ` يبدأ بحرف "${letter}"` : ""}</p>}
-    >
-      <h2 className="mb-3 text-3xl text-primary">{topic.title}</h2>
-      {letter && (
-        <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-7xl font-black text-white shadow-xl">
-          {letter}
-        </div>
-      )}
-      {!letter && (
-        <div className="mx-auto py-6 text-5xl">🎲</div>
-      )}
-    </GameCard>
+    <div className="space-y-2">
+      <div className="mx-auto inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-black text-white shadow">
+        {badge}
+      </div>
+      <FrameCard badge={<span className="text-2xl">{letter ? "🔤" : "🎲"}</span>}>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-primary/80">
+          {topic.category}
+        </p>
+        <h2 className="text-2xl text-primary leading-tight">{topic.title}</h2>
+        {letter && (
+          <div className="my-1 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-5xl font-black text-white shadow-xl">
+            {letter}
+          </div>
+        )}
+        <p className="text-xs font-bold text-ink/80 leading-snug px-2">
+          {topic.hint}{letter ? ` يبدأ بحرف "${letter}"` : ""}
+        </p>
+      </FrameCard>
+    </div>
   );
 }
+
 
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
