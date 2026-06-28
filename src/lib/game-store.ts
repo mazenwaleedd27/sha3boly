@@ -16,7 +16,9 @@ type State = {
   addScore: (id: string, delta: number) => void;
   giveRandomCard: (id: string) => void;
   removeCard: (id: string, idx: number) => void;
+  clearAllCards: () => void;
   resetScores: () => void;
+
 };
 
 export const useGame = create<State>((set) => ({
@@ -43,6 +45,9 @@ export const useGame = create<State>((set) => ({
         p.id === id ? { ...p, cards: p.cards.filter((_, i) => i !== idx) } : p,
       ),
     })),
+  clearAllCards: () =>
+    set((s) => ({ players: s.players.map((p) => ({ ...p, cards: [] })) })),
+
   resetScores: () =>
     set((s) => ({ players: s.players.map((p) => ({ ...p, score: 0, cards: [] })) })),
 }));
