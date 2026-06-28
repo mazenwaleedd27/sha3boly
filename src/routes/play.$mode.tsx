@@ -4,7 +4,9 @@ import { useGame, type Player } from "@/lib/game-store";
 import { GAME_MODES, type TopicCard } from "@/lib/game-data";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
 import { GameCard, PopButton } from "@/components/GameCard";
+import { FrameCard } from "@/components/FrameCard";
 import { TimerRing, useTimer } from "@/components/Timer";
+import { GameIntro } from "@/components/GameIntro";
 
 export const Route = createFileRoute("/play/$mode")({
   head: () => ({ meta: [{ title: "اللعب — كلمة وحرف" }] }),
@@ -16,10 +18,16 @@ function PlayPage() {
   const mode = GAME_MODES.find((m) => m.id === modeId);
   const { players } = useGame();
   const nav = useNavigate();
+  const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
     if (!mode || players.length < 2) nav({ to: "/" });
   }, [mode, players.length, nav]);
+
+  // لما الموود يتغير نرجع نعرض الـIntro
+  useEffect(() => {
+    setIntroDone(false);
+  }, [modeId]);
 
   if (!mode || players.length < 2) return null;
 
@@ -27,16 +35,23 @@ function PlayPage() {
     <main className="min-h-dvh bg-background pb-24">
       <TopBar title={mode.name} subtitle={mode.subtitle} emoji={mode.emoji} />
       <div className="mx-auto max-w-md px-4 pt-4">
-        {mode.id === "auction" && <AuctionMode />}
-        {mode.id === "survival" && <SurvivalMode />}
-        {mode.id === "pingpong" && <PingPongMode />}
-        {mode.id === "hattrick" && <HatTrickMode />}
-        {mode.id === "chain" && <ChainMode />}
+        {!introDone ? (
+          <GameIntro mode={mode} onDone={() => setIntroDone(true)} />
+        ) : (
+          <>
+            {mode.id === "auction" && <AuctionMode />}
+            {mode.id === "survival" && <SurvivalMode />}
+            {mode.id === "pingpong" && <PingPongMode />}
+            {mode.id === "hattrick" && <HatTrickMode />}
+            {mode.id === "chain" && <ChainMode />}
+          </>
+        )}
       </div>
       <Scoreboard />
     </main>
   );
 }
+
 
 function TopBar({ title, subtitle, emoji }: { title: string; subtitle: string; emoji: string }) {
   return (
