@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useGame, type Player } from "@/lib/game-store";
 import { GAME_MODES, type TopicCard } from "@/lib/game-data";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
-import { GameCard, PopButton } from "@/components/GameCard";
+import { PopButton } from "@/components/GameCard";
 import { FrameCard } from "@/components/FrameCard";
 import { TimerRing, useTimer } from "@/components/Timer";
 import { GameIntro } from "@/components/GameIntro";
