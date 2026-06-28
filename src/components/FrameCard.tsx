@@ -13,7 +13,7 @@ export function FrameCard({
 }) {
   return (
     <div
-      className={`relative mx-auto w-full max-w-[20rem] ${className}`}
+      className={`relative mx-auto w-full max-w-[18rem] ${className}`}
       style={{ aspectRatio: "1024 / 1500" }}
     >
       <img
@@ -26,20 +26,21 @@ export function FrameCard({
 
       {/* الدائرة الصفرا فوق - مكان البادج */}
       {badge && (
-        <div className="absolute left-1/2 top-[14%] z-10 flex h-[15%] w-[15%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-center text-ink font-black leading-tight">
+        <div className="absolute left-1/2 top-[16%] z-10 flex h-[13%] w-[13%] -translate-x-1/2 -translate-y-1/2 items-center justify-center text-center text-ink font-black leading-tight">
           {badge}
         </div>
       )}
 
       {/* المنطقة البيضا */}
       <div
-        className="absolute inset-0 flex flex-col items-center justify-center text-center"
-        style={{ padding: "26% 14% 13%" }}
+        className="absolute inset-0 overflow-hidden"
+        style={{ paddingTop: "23%", paddingBottom: "13%", paddingLeft: "15%", paddingRight: "15%" }}
       >
-        <div className="flex h-full w-full flex-col items-center justify-center gap-3">
+        <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center">
           {children}
         </div>
       </div>
     </div>
   );
 }
+
