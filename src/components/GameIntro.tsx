@@ -105,24 +105,25 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
         <p className="mt-1 text-xs text-muted-foreground">احفظهم في دماغك ومتقولش لحد!</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="space-y-4">
         {current.cards.map((c, i) => (
           <FrameCard
             key={i}
-            badge={<span className="text-2xl">{c.emoji}</span>}
+            badge={<span className="text-3xl">{c.emoji}</span>}
           >
             <div
-              className={`mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-black ${
+              className={`inline-block rounded-full px-3 py-0.5 text-xs font-black ${
                 c.kind === "power" ? "bg-secondary text-white" : "bg-destructive text-white"
               }`}
             >
               {c.kind === "power" ? "قوة" : "تلبيس"}
             </div>
-            <h3 className="text-base leading-tight text-ink">{c.name}</h3>
-            <p className="text-[11px] leading-snug text-ink/80">{c.desc}</p>
+            <h3 className="text-xl leading-tight text-ink">{c.name}</h3>
+            <p className="text-sm leading-snug text-ink/80 px-1">{c.desc}</p>
           </FrameCard>
         ))}
       </div>
+
 
       <PopButton onClick={nextPlayer} className="w-full text-lg" variant="secondary">
         {isLast ? "خفيت كروتي · ابدأ اللعب 🚀" : `خفيت · ادي الموبايل لـ ${players[idx + 1].name} ←`}
