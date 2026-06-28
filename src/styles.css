@@ -110,3 +110,36 @@
     box-shadow: 0 2px 0 0 oklch(0.25 0.08 30 / 0.85), 0 4px 10px -4px oklch(0.25 0.08 30 / 0.4);
   }
 }
+
+@utility neon-title {
+  display: inline-block;
+  padding: 0.5rem 2.5rem;
+  border-radius: 9999px;
+  font-size: clamp(3.5rem, 14vw, 5.5rem);
+  font-weight: 900;
+  color: #fff;
+  background: oklch(0.22 0.06 320 / 0.55);
+  border: 3px solid #fff;
+  outline: 3px solid #ff2bd6;
+  outline-offset: 4px;
+  text-shadow:
+    0 0 6px #fff,
+    0 0 14px #ff2bd6,
+    0 0 28px #ff2bd6,
+    0 0 56px #b026ff;
+  box-shadow:
+    0 0 12px #ff2bd6,
+    0 0 30px #ff2bd6,
+    0 0 60px #b026ff,
+    inset 0 0 18px #ff2bd6;
+  letter-spacing: 0.04em;
+  animation: neon-flicker 3s infinite alternate;
+}
+
+@keyframes neon-flicker {
+  0%, 100% { filter: brightness(1); }
+  45% { filter: brightness(1.15); }
+  50% { filter: brightness(0.85); }
+  55% { filter: brightness(1.1); }
+}
+

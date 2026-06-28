@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useGame, type Player } from "@/lib/game-store";
 import { GAME_MODES, type TopicCard } from "@/lib/game-data";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
-import { GameCard, PopButton } from "@/components/GameCard";
+import { PopButton } from "@/components/GameCard";
+import { FrameCard } from "@/components/FrameCard";
 import { TimerRing, useTimer } from "@/components/Timer";
+import { GameIntro } from "@/components/GameIntro";
 
 export const Route = createFileRoute("/play/$mode")({
   head: () => ({ meta: [{ title: "اللعب — كلمة وحرف" }] }),
@@ -16,10 +18,16 @@ function PlayPage() {
   const mode = GAME_MODES.find((m) => m.id === modeId);
   const { players } = useGame();
   const nav = useNavigate();
+  const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
     if (!mode || players.length < 2) nav({ to: "/" });
   }, [mode, players.length, nav]);
+
+  // لما الموود يتغير نرجع نعرض الـIntro
+  useEffect(() => {
+    setIntroDone(false);
+  }, [modeId]);
 
   if (!mode || players.length < 2) return null;
 
@@ -27,16 +35,23 @@ function PlayPage() {
     <main className="min-h-dvh bg-background pb-24">
       <TopBar title={mode.name} subtitle={mode.subtitle} emoji={mode.emoji} />
       <div className="mx-auto max-w-md px-4 pt-4">
-        {mode.id === "auction" && <AuctionMode />}
-        {mode.id === "survival" && <SurvivalMode />}
-        {mode.id === "pingpong" && <PingPongMode />}
-        {mode.id === "hattrick" && <HatTrickMode />}
-        {mode.id === "chain" && <ChainMode />}
+        {!introDone ? (
+          <GameIntro mode={mode} onDone={() => setIntroDone(true)} />
+        ) : (
+          <>
+            {mode.id === "auction" && <AuctionMode />}
+            {mode.id === "survival" && <SurvivalMode />}
+            {mode.id === "pingpong" && <PingPongMode />}
+            {mode.id === "hattrick" && <HatTrickMode />}
+            {mode.id === "chain" && <ChainMode />}
+          </>
+        )}
       </div>
       <Scoreboard />
     </main>
   );
 }
+
 
 function TopBar({ title, subtitle, emoji }: { title: string; subtitle: string; emoji: string }) {
   return (
@@ -85,26 +100,32 @@ function DrawCard({
   badge: string;
 }) {
   return (
-    <GameCard
-      badge={<span className="text-center text-[10px] font-black leading-tight text-ink">{badge}</span>}
-      footer={<p className="font-display text-lg font-bold text-ink">{topic.hint}{letter ? ` يبدأ بحرف "${letter}"` : ""}</p>}
-    >
-      <h2 className="mb-3 text-3xl text-primary">{topic.title}</h2>
-      {letter && (
-        <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-7xl font-black text-white shadow-xl">
-          {letter}
-        </div>
-      )}
-      {!letter && (
-        <div className="mx-auto py-6 text-5xl">🎲</div>
-      )}
-    </GameCard>
+    <div className="space-y-2">
+      <div className="mx-auto inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-black text-white shadow">
+        {badge}
+      </div>
+      <FrameCard badge={<span className="text-2xl">{letter ? "🔤" : "🎲"}</span>}>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-primary/80">
+          {topic.category}
+        </p>
+        <h2 className="text-2xl text-primary leading-tight">{topic.title}</h2>
+        {letter && (
+          <div className="my-1 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-5xl font-black text-white shadow-xl">
+            {letter}
+          </div>
+        )}
+        <p className="text-xs font-bold text-ink/80 leading-snug px-2">
+          {topic.hint}{letter ? ` يبدأ بحرف "${letter}"` : ""}
+        </p>
+      </FrameCard>
+    </div>
   );
 }
 
+
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
-  const { players, addScore, giveRandomCard } = useGame();
+  const { players, addScore } = useGame();
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState<"deal" | "draw" | "bid" | "answer" | "result">("deal");
   const [topic, setTopic] = useState<TopicCard | null>(null);
@@ -115,7 +136,6 @@ function AuctionMode() {
   const timer = useTimer(30);
 
   function dealAndDraw() {
-    players.forEach((p) => p.cards.length < 2 && giveRandomCard(p.id));
     const t = pickTopic();
     setTopic(t);
     setLetter(t.needsLetter ? pickLetter() : null);
@@ -149,12 +169,13 @@ function AuctionMode() {
       <div className="space-y-4 text-center">
         <RoundBadge round={round} total={5} />
         <p className="rounded-2xl bg-card p-4 text-ink">
-          هتتوزع كروت قوة وتلبيس عشوائي. كل لاعب أقصى عدد 2 كارت.
+          جاهزين للجولة؟ هنسحب موضوع جديد وتبدأوا تزايدوا.
         </p>
-        <PopButton onClick={dealAndDraw} className="w-full">وزّع واسحب الموضوع 🎴</PopButton>
+        <PopButton onClick={dealAndDraw} className="w-full">اسحب الموضوع 🎴</PopButton>
       </div>
     );
   }
+
 
   if (phase === "bid" && topic) {
     return (
