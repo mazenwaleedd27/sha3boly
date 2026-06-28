@@ -125,7 +125,7 @@ function DrawCard({
 
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
-  const { players, addScore, giveRandomCard } = useGame();
+  const { players, addScore } = useGame();
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState<"deal" | "draw" | "bid" | "answer" | "result">("deal");
   const [topic, setTopic] = useState<TopicCard | null>(null);
@@ -136,7 +136,6 @@ function AuctionMode() {
   const timer = useTimer(30);
 
   function dealAndDraw() {
-    players.forEach((p) => p.cards.length < 2 && giveRandomCard(p.id));
     const t = pickTopic();
     setTopic(t);
     setLetter(t.needsLetter ? pickLetter() : null);
@@ -170,12 +169,13 @@ function AuctionMode() {
       <div className="space-y-4 text-center">
         <RoundBadge round={round} total={5} />
         <p className="rounded-2xl bg-card p-4 text-ink">
-          هتتوزع كروت قوة وتلبيس عشوائي. كل لاعب أقصى عدد 2 كارت.
+          جاهزين للجولة؟ هنسحب موضوع جديد وتبدأوا تزايدوا.
         </p>
-        <PopButton onClick={dealAndDraw} className="w-full">وزّع واسحب الموضوع 🎴</PopButton>
+        <PopButton onClick={dealAndDraw} className="w-full">اسحب الموضوع 🎴</PopButton>
       </div>
     );
   }
+
 
   if (phase === "bid" && topic) {
     return (
