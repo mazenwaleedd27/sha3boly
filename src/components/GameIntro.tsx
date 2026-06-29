@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useGame } from "@/lib/game-store";
 import type { GameMode } from "@/lib/game-data";
 import { PopButton } from "@/components/GameCard";
-import { FrameCard } from "@/components/FrameCard";
+
 
 /**
  * فلو "ادي الموبايل للاعب" قبل بداية كل لعبة:
@@ -107,20 +107,27 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
 
       <div className="space-y-4">
         {current.cards.map((c, i) => (
-          <FrameCard
+          <div
             key={i}
-            badge={<span className="text-3xl">{c.emoji}</span>}
+            className="card-splash rounded-3xl p-2 shadow-xl"
           >
-            <div
-              className={`inline-block rounded-full px-3 py-0.5 text-xs font-black ${
-                c.kind === "power" ? "bg-secondary text-white" : "bg-destructive text-white"
-              }`}
-            >
-              {c.kind === "power" ? "قوة" : "تلبيس"}
+            <div className="relative rounded-2xl bg-cream px-5 pb-5 pt-8">
+              <div className="absolute -top-4 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-3xl shadow-lg">
+                {c.emoji}
+              </div>
+              <div className="text-center">
+                <div
+                  className={`inline-block rounded-full px-4 py-1 text-xs font-black text-white shadow ${
+                    c.kind === "power" ? "bg-secondary" : "bg-destructive"
+                  }`}
+                >
+                  {c.kind === "power" ? "⚡ قوة" : "🎭 تلبيس"}
+                </div>
+                <h3 className="mt-2 text-2xl font-black leading-tight text-ink">{c.name}</h3>
+                <p className="mt-1 text-sm leading-snug text-ink/75">{c.desc}</p>
+              </div>
             </div>
-            <h3 className="text-xl leading-tight text-ink">{c.name}</h3>
-            <p className="text-sm leading-snug text-ink/80 px-1">{c.desc}</p>
-          </FrameCard>
+          </div>
         ))}
       </div>
 
