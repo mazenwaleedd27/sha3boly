@@ -4,12 +4,13 @@ import { useGame, type Player } from "@/lib/game-store";
 import { GAME_MODES, type TopicCard } from "@/lib/game-data";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
 import { PopButton } from "@/components/GameCard";
+import { SiteNav } from "@/components/SiteNav";
 
 import { TimerRing, useTimer } from "@/components/Timer";
 import { GameIntro } from "@/components/GameIntro";
 
 export const Route = createFileRoute("/play/$mode")({
-  head: () => ({ meta: [{ title: "اللعب — كلمة وحرف" }] }),
+  head: () => ({ meta: [{ title: "اللعب — شعبولي" }] }),
   component: PlayPage,
 });
 
@@ -21,10 +22,9 @@ function PlayPage() {
   const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
-    if (!mode || players.length < 2) nav({ to: "/" });
+    if (!mode || players.length < 2) nav({ to: "/start" });
   }, [mode, players.length, nav]);
 
-  // لما الموود يتغير نرجع نعرض الـIntro
   useEffect(() => {
     setIntroDone(false);
   }, [modeId]);
@@ -32,9 +32,10 @@ function PlayPage() {
   if (!mode || players.length < 2) return null;
 
   return (
-    <main className="min-h-dvh bg-background pb-24">
-      <TopBar title={mode.name} subtitle={mode.subtitle} emoji={mode.emoji} />
-      <div className="mx-auto max-w-md px-4 pt-4">
+    <main className="min-h-dvh bg-cream pb-28">
+      <SiteNav />
+      <PlayHero title={mode.name} subtitle={mode.subtitle} emoji={mode.emoji} />
+      <div className="mx-auto -mt-10 max-w-md px-4">
         {!introDone ? (
           <GameIntro mode={mode} onDone={() => setIntroDone(true)} />
         ) : (
@@ -52,19 +53,23 @@ function PlayPage() {
   );
 }
 
-
-function TopBar({ title, subtitle, emoji }: { title: string; subtitle: string; emoji: string }) {
+function PlayHero({ title, subtitle, emoji }: { title: string; subtitle: string; emoji: string }) {
   return (
-    <header className="card-splash flex items-center gap-3 px-4 pb-6 pt-5">
-      <Link to="/modes" className="rounded-full bg-white/90 px-3 py-2 text-ink font-bold">←</Link>
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-white bg-accent text-2xl">{emoji}</div>
-      <div className="text-white drop-shadow">
-        <div className="text-2xl font-black leading-none">{title}</div>
-        <div className="text-xs font-bold opacity-95">{subtitle}</div>
+    <header className="hero-splash wave-bottom px-5 pb-16 pt-8 text-center">
+      <div className="mx-auto flex max-w-md items-center justify-center gap-3">
+        <Link to="/modes" className="rounded-full bg-white/90 px-3 py-2 font-bold text-ink shadow">←</Link>
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-cta text-3xl shadow">
+          {emoji}
+        </div>
+        <div className="text-right">
+          <div className="text-3xl font-black text-ink drop-shadow">{title}</div>
+          <div className="text-sm font-bold text-ink/75">{subtitle}</div>
+        </div>
       </div>
     </header>
   );
 }
+
 
 function Scoreboard() {
   const { players } = useGame();

@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StartRouteImport } from './routes/start'
 import { Route as ModesRouteImport } from './routes/modes'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlayModeRouteImport } from './routes/play.$mode'
 
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModesRoute = ModesRouteImport.update({
   id: '/modes',
   path: '/modes',
@@ -32,35 +38,46 @@ const PlayModeRoute = PlayModeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/modes': typeof ModesRoute
+  '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/modes': typeof ModesRoute
+  '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/modes': typeof ModesRoute
+  '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/modes' | '/play/$mode'
+  fullPaths: '/' | '/modes' | '/start' | '/play/$mode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/modes' | '/play/$mode'
-  id: '__root__' | '/' | '/modes' | '/play/$mode'
+  to: '/' | '/modes' | '/start' | '/play/$mode'
+  id: '__root__' | '/' | '/modes' | '/start' | '/play/$mode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ModesRoute: typeof ModesRoute
+  StartRoute: typeof StartRoute
   PlayModeRoute: typeof PlayModeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modes': {
       id: '/modes'
       path: '/modes'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ModesRoute: ModesRoute,
+  StartRoute: StartRoute,
   PlayModeRoute: PlayModeRoute,
 }
 export const routeTree = rootRouteImport
