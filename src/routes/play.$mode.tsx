@@ -100,25 +100,25 @@ function DrawCard({
   badge: string;
 }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="mx-auto inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-black text-white shadow">
         {badge}
       </div>
-      <div className="card-splash rounded-3xl p-2 shadow-xl">
-        <div className="relative rounded-2xl bg-cream px-5 pb-5 pt-9 text-center">
-          <div className="absolute -top-5 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-2xl shadow-lg">
+      <div className="card-splash rounded-3xl p-3 shadow-xl">
+        <div className="relative rounded-2xl bg-cream px-6 pb-6 pt-12 text-center">
+          <div className="absolute -top-6 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-2xl shadow-lg">
             {letter ? "🔤" : "🎲"}
           </div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-primary/80">
             {topic.category}
           </p>
-          <h2 className="mt-1 text-2xl font-black text-primary leading-tight">{topic.title}</h2>
+          <h2 className="mt-2 text-2xl font-black text-primary leading-tight">{topic.title}</h2>
           {letter && (
-            <div className="mx-auto my-3 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-6xl font-black text-white shadow-xl">
+            <div className="mx-auto my-4 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-6xl font-black text-white shadow-xl">
               {letter}
             </div>
           )}
-          <p className="mt-2 text-sm font-bold text-ink/80 leading-snug">
+          <p className="mt-3 text-sm font-bold text-ink/80 leading-snug">
             {topic.hint}{letter ? ` يبدأ بحرف "${letter}"` : ""}
           </p>
         </div>
