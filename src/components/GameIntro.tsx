@@ -105,17 +105,17 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
         <p className="mt-1 text-xs text-muted-foreground">احفظهم في دماغك ومتقولش لحد!</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {current.cards.map((c, i) => (
           <div
             key={i}
-            className="card-splash rounded-3xl p-2 shadow-xl"
+            className="card-splash rounded-3xl p-3 shadow-xl"
           >
-            <div className="relative rounded-2xl bg-cream px-5 pb-5 pt-8">
-              <div className="absolute -top-4 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-3xl shadow-lg">
+            <div className="relative rounded-2xl bg-cream px-6 pb-6 pt-10">
+              <div className="absolute -top-5 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-3xl shadow-lg">
                 {c.emoji}
               </div>
-              <div className="text-center">
+              <div className="flex flex-col items-center gap-3 text-center">
                 <div
                   className={`inline-block rounded-full px-4 py-1 text-xs font-black text-white shadow ${
                     c.kind === "power" ? "bg-secondary" : "bg-destructive"
@@ -123,8 +123,8 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
                 >
                   {c.kind === "power" ? "⚡ قوة" : "🎭 تلبيس"}
                 </div>
-                <h3 className="mt-2 text-2xl font-black leading-tight text-ink">{c.name}</h3>
-                <p className="mt-1 text-sm leading-snug text-ink/75">{c.desc}</p>
+                <h3 className="text-2xl font-black leading-tight text-ink">{c.name}</h3>
+                <p className="text-sm leading-snug text-ink/75">{c.desc}</p>
               </div>
             </div>
           </div>
