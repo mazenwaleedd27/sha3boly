@@ -1,8 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import logoAsset from "@/assets/logo.png.asset.json";
-import characterAsset from "@/assets/mazen-character.png.asset.json";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -44,8 +42,17 @@ function HowCard({ emoji, title, desc }: { emoji: string; title: string; desc: s
   );
 }
 
-
-
+function Feature({ icon, title, desc }: { icon: string; title: string; desc: string }) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-4">
+      <div className="text-3xl">{icon}</div>
+      <div className="text-right">
+        <div className="font-black text-ink">{title}</div>
+        <div className="text-xs font-bold text-ink/65">{desc}</div>
+      </div>
+    </div>
+  );
+}
 
 function Home() {
   return (
@@ -79,22 +86,18 @@ function Home() {
             </div>
 
             {/* Right column: floating cards mosaic */}
-            <div className="relative mx-auto hidden h-96 w-full max-w-md md:block">
-              {["م", "ا", "ز", "ن", "و", "ل", "ي", "د"].map((l, i) => {
+            <div className="relative mx-auto hidden h-80 w-full max-w-md md:block">
+              {["م", "ا", "ز", "ن"].map((l, i) => {
                 const positions = [
-                  "right-4 top-0 rotate-[-8deg] bg-splash-teal",
-                  "right-1/3 top-8 rotate-[6deg] bg-splash-yellow",
-                  "right-2/3 top-2 rotate-[-12deg] bg-splash-pink",
-                  "left-2 top-14 rotate-[10deg] bg-splash-orange",
-                  "right-6 bottom-16 rotate-[8deg] bg-splash-purple",
-                  "right-1/3 bottom-4 rotate-[-6deg] bg-splash-pink",
-                  "right-2/3 bottom-10 rotate-[14deg] bg-splash-teal",
-                  "left-4 bottom-2 rotate-[-10deg] bg-splash-yellow",
+                  "right-4 top-2 rotate-[-8deg] bg-splash-teal",
+                  "right-1/3 top-10 rotate-[6deg] bg-splash-yellow",
+                  "right-2/3 top-4 rotate-[-12deg] bg-splash-pink",
+                  "right-1/4 bottom-2 rotate-[10deg] bg-splash-orange",
                 ];
                 return (
                   <div
-                    key={l + i}
-                    className={`absolute flex h-24 w-16 items-center justify-center rounded-2xl border-4 border-white text-4xl font-black text-white shadow-2xl ${positions[i]}`}
+                    key={l}
+                    className={`absolute flex h-28 w-20 items-center justify-center rounded-2xl border-4 border-white text-5xl font-black text-white shadow-2xl ${positions[i]}`}
                   >
                     {l}
                   </div>
@@ -103,28 +106,20 @@ function Home() {
             </div>
           </div>
 
-          {/* CTA with character */}
+          {/* CTA — full width, not overlapping floating cards */}
           <div className="mx-auto mt-10 flex max-w-6xl flex-col items-center gap-2">
-            <div className="relative inline-flex items-end gap-3">
-              <img
-                src={characterAsset.url}
-                alt="شخصية شعبولي"
-                className="h-28 w-28 -mb-2 drop-shadow-xl md:h-36 md:w-36"
-              />
-              <Link
-                to="/start"
-                className="btn-pop btn-pop-active inline-flex items-center gap-3 rounded-full bg-nav px-12 py-5 text-2xl font-black text-white shadow-xl"
-              >
-                🎮 ابدأ اللعب الآن
-              </Link>
-            </div>
+            <Link
+              to="/start"
+              className="btn-pop btn-pop-active inline-flex items-center gap-3 rounded-full bg-nav px-12 py-5 text-2xl font-black text-white shadow-xl"
+            >
+              🎮 ابدأ اللعب الآن
+            </Link>
             <a href="#how" className="text-sm font-bold text-nav underline">
               ↓ اعرف المزيد
             </a>
           </div>
         </div>
       </section>
-
 
       {/* STORY */}
       <section id="story" className="mx-auto max-w-4xl px-5 pt-14">
@@ -170,6 +165,15 @@ function Home() {
         </div>
       </section>
 
+      {/* FEATURES STRIP */}
+      <section className="bg-white">
+        <div className="mx-auto grid max-w-6xl divide-x divide-x-reverse divide-ink/10 px-2 md:grid-cols-4">
+          <Feature icon="🛡️" title="آمنة للأطفال" desc="تصميم آمن ومواد عالية الجودة" />
+          <Feature icon="🚚" title="شحن سريع" desc="توصيل إلى باب منزلك" />
+          <Feature icon="🏅" title="ضمان الجودة" desc="نضمن جودة منتجاتنا" />
+          <Feature icon="🎧" title="دعم العملاء" desc="نحن هنا لمساعدتك" />
+        </div>
+      </section>
 
       <footer id="contact" className="bg-nav py-6 text-center text-sm font-bold text-white/90">
         شعبولي · بشمهندس مازن وليد · {new Date().getFullYear()}
