@@ -148,7 +148,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white p-6 shadow-md">
+          <div id="about" className="rounded-3xl bg-white p-6 shadow-md scroll-mt-20">
             <h2 className="mb-4 text-center text-3xl text-nav">وصف اللعبة</h2>
             <p className="text-center font-bold leading-relaxed text-ink/80">
               شعبولي لعبة عائلية سريعة بتجمع الذكاء والحظ والضحك. كل لاعب بيسحب بطاقات حروف
