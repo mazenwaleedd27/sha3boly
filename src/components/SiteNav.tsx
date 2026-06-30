@@ -9,11 +9,10 @@ export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
           <img src={logoAsset.url} alt="شعبولي" className="h-12 w-auto drop-shadow" />
         </Link>
         <ul className="hidden items-center gap-6 text-white font-bold md:flex">
+          <li><a href="#story" className="opacity-90 hover:opacity-100">قصتي</a></li>
           <li><a href="#about" className="opacity-90 hover:opacity-100">عن اللعبة</a></li>
           <li><a href="#how" className="opacity-90 hover:opacity-100">طريقة اللعبة</a></li>
-          <li><a href="#cards" className="opacity-90 hover:opacity-100">المحتويات</a></li>
           <li><a href="#faq" className="opacity-90 hover:opacity-100">الأسئلة الشائعة</a></li>
-          <li><a href="#contact" className="opacity-90 hover:opacity-100">تواصل معنا</a></li>
           <li>
             <Link
               to="/"
