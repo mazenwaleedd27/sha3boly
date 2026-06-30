@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import logoAsset from "@/assets/logo.png.asset.json";
+import characterAsset from "@/assets/mazen-character.png.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
