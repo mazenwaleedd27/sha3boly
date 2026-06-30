@@ -12,7 +12,7 @@ export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
           <li><a href="#story" className="opacity-90 hover:opacity-100">قصتي</a></li>
           <li><a href="#about" className="opacity-90 hover:opacity-100">عن اللعبة</a></li>
           <li><a href="#how" className="opacity-90 hover:opacity-100">طريقة اللعبة</a></li>
-          <li><a href="#faq" className="opacity-90 hover:opacity-100">الأسئلة الشائعة</a></li>
+          
           <li>
             <Link
               to="/"
