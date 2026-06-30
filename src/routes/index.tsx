@@ -179,15 +179,6 @@ function Home() {
         </div>
       </section>
 
-      {/* FEATURES STRIP */}
-      <section className="bg-white">
-        <div className="mx-auto grid max-w-6xl divide-x divide-x-reverse divide-ink/10 px-2 md:grid-cols-4">
-          <Feature icon="🛡️" title="آمنة للأطفال" desc="تصميم آمن ومواد عالية الجودة" />
-          <Feature icon="🚚" title="شحن سريع" desc="توصيل إلى باب منزلك" />
-          <Feature icon="🏅" title="ضمان الجودة" desc="نضمن جودة منتجاتنا" />
-          <Feature icon="🎧" title="دعم العملاء" desc="نحن هنا لمساعدتك" />
-        </div>
-      </section>
 
       <footer id="contact" className="bg-nav py-6 text-center text-sm font-bold text-white/90">
         شعبولي · بشمهندس مازن وليد · {new Date().getFullYear()}
