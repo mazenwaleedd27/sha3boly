@@ -19,10 +19,11 @@ function Start() {
 
   function add() {
     const n = name.trim();
-    if (!n || list.includes(n)) return;
+    if (!n || list.includes(n) || list.length >= 12) return;
     setList([...list, n]);
     setName("");
   }
+
 
   function start() {
     if (list.length < 2) return;
