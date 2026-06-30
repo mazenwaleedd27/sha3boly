@@ -79,33 +79,20 @@ function Home() {
               </p>
 
               <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-3 rounded-3xl bg-white/70 p-3 shadow">
-                <Stat icon="👥" top="2-6" bottom="لاعبين" />
+                <Stat icon="👥" top="2-12" bottom="لاعبين" />
                 <Stat icon="🕐" top="15-30" bottom="دقيقة" />
                 <Stat icon="🧒" top="+8" bottom="سنوات" />
-              </div>
-
-              <div className="mt-7 flex flex-col items-center gap-2 md:items-start">
-                <Link
-                  to="/start"
-                  className="btn-pop btn-pop-active inline-flex items-center gap-3 rounded-full bg-nav px-10 py-4 text-2xl font-black text-white shadow-xl"
-                >
-                  🛒 ابدأ اللعب الآن
-                </Link>
-                <a href="#how" className="text-sm font-bold text-nav underline">
-                  ↓ اعرف المزيد
-                </a>
               </div>
             </div>
 
             {/* Right column: floating cards mosaic */}
-            <div className="relative mx-auto hidden h-96 w-full max-w-md md:block">
-              {["أ", "م", "ن", "ج", "ب"].map((l, i) => {
+            <div className="relative mx-auto hidden h-80 w-full max-w-md md:block">
+              {["م", "ا", "ز", "ن"].map((l, i) => {
                 const positions = [
                   "right-4 top-2 rotate-[-8deg] bg-splash-teal",
                   "right-1/3 top-10 rotate-[6deg] bg-splash-yellow",
                   "right-2/3 top-4 rotate-[-12deg] bg-splash-pink",
-                  "right-10 bottom-6 rotate-[10deg] bg-splash-orange",
-                  "right-1/2 bottom-0 rotate-[-4deg] bg-splash-purple",
+                  "right-1/4 bottom-2 rotate-[10deg] bg-splash-orange",
                 ];
                 return (
                   <div
@@ -116,13 +103,37 @@ function Home() {
                   </div>
                 );
               })}
-              <div className="absolute bottom-10 left-6 flex h-16 w-16 items-center justify-center rounded-full bg-ink text-3xl shadow-xl">
-                💣
-              </div>
             </div>
+          </div>
+
+          {/* CTA — full width, not overlapping floating cards */}
+          <div className="mx-auto mt-10 flex max-w-6xl flex-col items-center gap-2">
+            <Link
+              to="/start"
+              className="btn-pop btn-pop-active inline-flex items-center gap-3 rounded-full bg-nav px-12 py-5 text-2xl font-black text-white shadow-xl"
+            >
+              🎮 ابدأ اللعب الآن
+            </Link>
+            <a href="#how" className="text-sm font-bold text-nav underline">
+              ↓ اعرف المزيد
+            </a>
           </div>
         </div>
       </section>
+
+      {/* STORY */}
+      <section id="story" className="mx-auto max-w-4xl px-5 pt-14">
+        <div className="rounded-3xl bg-white p-8 shadow-md text-center">
+          <h2 className="text-3xl text-nav">قصتي</h2>
+          <p className="mt-4 text-lg font-bold leading-loose text-ink/80">
+            أنا بشمهندس مازن وليد، حبيت أعمل لعبة تجمع العيلة والأصحاب في جلسة واحدة
+            مليانة ضحك ومنافسة. شعبولي اتولدت من حب الحروف العربية ومن إحساس إن أحلى
+            الأوقات بتبقى لما نلعب مع بعض من غير شاشات كتير. اللعبة دي إهداء لكل بيت
+            بيحب الفرفشة والذكاء.
+          </p>
+        </div>
+      </section>
+
 
       {/* HOW TO PLAY */}
       <section id="how" className="mx-auto max-w-6xl px-5 py-12">
@@ -137,7 +148,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white p-6 shadow-md">
+          <div id="about" className="rounded-3xl bg-white p-6 shadow-md scroll-mt-20">
             <h2 className="mb-4 text-center text-3xl text-nav">وصف اللعبة</h2>
             <p className="text-center font-bold leading-relaxed text-ink/80">
               شعبولي لعبة عائلية سريعة بتجمع الذكاء والحظ والضحك. كل لاعب بيسحب بطاقات حروف

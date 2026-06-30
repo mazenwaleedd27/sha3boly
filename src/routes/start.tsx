@@ -19,10 +19,11 @@ function Start() {
 
   function add() {
     const n = name.trim();
-    if (!n || list.includes(n)) return;
+    if (!n || list.includes(n) || list.length >= 12) return;
     setList([...list, n]);
     setName("");
   }
+
 
   function start() {
     if (list.length < 2) return;
@@ -35,7 +36,7 @@ function Start() {
       <SiteNav />
       <section className="hero-splash wave-bottom px-5 pb-20 pt-10 text-center">
         <h1 className="text-5xl font-black text-ink drop-shadow">مين هيلعب؟</h1>
-        <p className="mt-2 text-lg font-bold text-ink/80">ضيف أسماء اللاعبين عشان نبدأ</p>
+        <p className="mt-2 text-lg font-bold text-ink/80">ضيف أسماء اللاعبين (من 2 لـ 12)</p>
       </section>
 
       <section className="mx-auto -mt-12 max-w-md px-5 pb-16">
