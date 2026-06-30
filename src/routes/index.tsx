@@ -44,17 +44,8 @@ function HowCard({ emoji, title, desc }: { emoji: string; title: string; desc: s
   );
 }
 
-function Feature({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-  return (
-    <div className="flex items-center gap-3 px-4 py-4">
-      <div className="text-3xl">{icon}</div>
-      <div className="text-right">
-        <div className="font-black text-ink">{title}</div>
-        <div className="text-xs font-bold text-ink/65">{desc}</div>
-      </div>
-    </div>
-  );
-}
+
+
 
 function Home() {
   return (
