@@ -74,13 +74,7 @@
 }
 
 @utility hero-splash {
-  background:
-    radial-gradient(circle at 15% 25%, oklch(0.7 0.25 350 / 0.55) 0 14%, transparent 18%),
-    radial-gradient(circle at 85% 20%, oklch(0.78 0.2 50 / 0.55) 0 12%, transparent 16%),
-    radial-gradient(circle at 25% 80%, oklch(0.55 0.25 305 / 0.45) 0 14%, transparent 18%),
-    radial-gradient(circle at 80% 75%, oklch(0.7 0.25 350 / 0.45) 0 12%, transparent 16%),
-    radial-gradient(circle at 50% 50%, oklch(0.88 0.2 95 / 0.7) 0 10%, transparent 14%),
-    linear-gradient(135deg, oklch(0.88 0.2 95), oklch(0.78 0.2 50));
+  background: linear-gradient(135deg, oklch(0.88 0.2 95), oklch(0.78 0.2 50));
 }
 
 @utility wave-bottom {
