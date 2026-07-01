@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import logoAsset from "@/assets/logo.png.asset.json";
+import mazenChar from "@/assets/mazen-character.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,34 +22,6 @@ function Stat({ icon, top, bottom }: { icon: string; top: string; bottom: string
       <div className="text-right leading-tight">
         <div className="text-lg font-black text-ink">{top}</div>
         <div className="text-xs font-bold text-ink/70">{bottom}</div>
-      </div>
-    </div>
-  );
-}
-
-function HowCard({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
-  return (
-    <div className="flex flex-col items-center rounded-3xl bg-white p-5 text-center shadow-md">
-      <div className="text-5xl">{emoji}</div>
-      <h3 className="mt-3 text-xl text-nav">{title}</h3>
-      <p className="mt-1 text-sm font-bold text-ink/70 leading-snug">{desc}</p>
-      <Link
-        to="/start"
-        className="mt-4 rounded-2xl bg-nav px-6 py-2 font-black text-white btn-pop btn-pop-active"
-      >
-        العب
-      </Link>
-    </div>
-  );
-}
-
-function Feature({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-  return (
-    <div className="flex items-center gap-3 px-4 py-4">
-      <div className="text-3xl">{icon}</div>
-      <div className="text-right">
-        <div className="font-black text-ink">{title}</div>
-        <div className="text-xs font-bold text-ink/65">{desc}</div>
       </div>
     </div>
   );
@@ -106,15 +79,20 @@ function Home() {
             </div>
           </div>
 
-          {/* CTA — full width, not overlapping floating cards */}
-          <div className="mx-auto mt-10 flex max-w-6xl flex-col items-center gap-2">
+          {/* Character + CTA */}
+          <div className="mx-auto mt-10 flex max-w-6xl flex-col items-center gap-3">
+            <img
+              src={mazenChar}
+              alt="مازن وليد"
+              className="h-44 w-auto drop-shadow-[0_10px_15px_rgba(0,0,0,0.35)] md:h-56"
+            />
             <Link
               to="/start"
               className="btn-pop btn-pop-active inline-flex items-center gap-3 rounded-full bg-nav px-12 py-5 text-2xl font-black text-white shadow-xl"
             >
               🎮 ابدأ اللعب الآن
             </Link>
-            <a href="#how" className="text-sm font-bold text-nav underline">
+            <a href="#about" className="text-sm font-bold text-nav underline">
               ↓ اعرف المزيد
             </a>
           </div>
@@ -134,48 +112,25 @@ function Home() {
         </div>
       </section>
 
-
-      {/* HOW TO PLAY */}
-      <section id="how" className="mx-auto max-w-6xl px-5 py-12">
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="rounded-3xl bg-white p-6 shadow-md md:col-span-2">
-            <h2 className="mb-5 text-center text-3xl text-nav">طريقة اللعب</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <HowCard emoji="🔠" title="جمع الحروف" desc="اجمع أكبر عدد من بطاقات الحروف." />
-              <HowCard emoji="💣" title="بطاقات الحركة" desc="استخدم البطاقات لتغيير مجرى اللعبة." />
-              <HowCard emoji="🛡️" title="بطاقات الحماية" desc="احمِ حروفك من سرقة الآخرين." />
-              <HowCard emoji="🏆" title="كن الأسرع" desc="اجمع الحروف وكن الأسرع لتفوز!" />
-            </div>
-          </div>
-
-          <div id="about" className="rounded-3xl bg-white p-6 shadow-md scroll-mt-20">
-            <h2 className="mb-4 text-center text-3xl text-nav">وصف اللعبة</h2>
-            <p className="text-center font-bold leading-relaxed text-ink/80">
-              شعبولي لعبة عائلية سريعة بتجمع الذكاء والحظ والضحك. كل لاعب بيسحب بطاقات حروف
-              وبيستخدم كروت قوة وحماية وتلبيس عشان يكسب الجولة. من موبايل واحد، تقدروا تلعبوا
-              بـ ٥ طرق مختلفة وتتنافسوا لحد ما يطلع البطل.
-            </p>
-            <Link
-              to="/start"
-              className="mt-5 block rounded-2xl bg-cta px-6 py-3 text-center text-xl font-black text-ink btn-pop btn-pop-active"
-            >
-              يلا نبدأ 🎴
-            </Link>
-          </div>
+      {/* ABOUT */}
+      <section id="about" className="mx-auto max-w-4xl px-5 py-14">
+        <div className="rounded-3xl bg-white p-8 shadow-md scroll-mt-20">
+          <h2 className="mb-4 text-center text-3xl text-nav">عن اللعبة</h2>
+          <p className="text-center font-bold leading-relaxed text-ink/80">
+            شعبولي لعبة عائلية سريعة بتجمع الذكاء والحظ والضحك. كل لاعب بيسحب بطاقات حروف
+            وبيستخدم كروت قوة وحماية وتلبيس عشان يكسب الجولة. من موبايل واحد، تقدروا تلعبوا
+            بـ ٥ طرق مختلفة وتتنافسوا لحد ما يطلع البطل.
+          </p>
+          <Link
+            to="/start"
+            className="mt-6 mx-auto block w-fit rounded-2xl bg-cta px-8 py-3 text-center text-xl font-black text-ink btn-pop btn-pop-active"
+          >
+            يلا نبدأ 🎴
+          </Link>
         </div>
       </section>
 
-      {/* FEATURES STRIP */}
-      <section className="bg-white">
-        <div className="mx-auto grid max-w-6xl divide-x divide-x-reverse divide-ink/10 px-2 md:grid-cols-4">
-          <Feature icon="🛡️" title="آمنة للأطفال" desc="تصميم آمن ومواد عالية الجودة" />
-          <Feature icon="🚚" title="شحن سريع" desc="توصيل إلى باب منزلك" />
-          <Feature icon="🏅" title="ضمان الجودة" desc="نضمن جودة منتجاتنا" />
-          <Feature icon="🎧" title="دعم العملاء" desc="نحن هنا لمساعدتك" />
-        </div>
-      </section>
-
-      <footer id="contact" className="bg-nav py-6 text-center text-sm font-bold text-white/90">
+      <footer className="bg-nav py-6 text-center text-sm font-bold text-white/90">
         شعبولي · بشمهندس مازن وليد · {new Date().getFullYear()}
       </footer>
     </main>
