@@ -55,7 +55,7 @@ function PlayPage() {
 
 function PlayHero({ title, subtitle, emoji }: { title: string; subtitle: string; emoji: string }) {
   return (
-    <header className="hero-splash wave-bottom px-5 pb-16 pt-8 text-center">
+    <header className="hero-splash px-5 pb-16 pt-8 text-center">
       <div className="mx-auto flex max-w-md items-center justify-center gap-3">
         <Link to="/modes" className="rounded-full bg-white/90 px-3 py-2 font-bold text-ink shadow">←</Link>
         <div className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-cta text-3xl shadow">

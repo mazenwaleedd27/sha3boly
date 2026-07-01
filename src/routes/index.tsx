@@ -34,7 +34,7 @@ function Home() {
 
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="hero-splash wave-bottom px-5 pb-24 pt-10">
+        <div className="hero-splash px-5 pb-24 pt-10">
           <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2">
             <div className="text-center md:text-right">
               <img

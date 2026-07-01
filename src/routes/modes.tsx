@@ -23,7 +23,7 @@ function ModesPage() {
   return (
     <main className="min-h-dvh bg-cream pb-20">
       <SiteNav />
-      <header className="hero-splash wave-bottom px-5 pb-16 pt-10 text-center">
+      <header className="hero-splash px-5 pb-16 pt-10 text-center">
         <h1 className="text-4xl font-black text-ink drop-shadow">اختاروا طريقة اللعب</h1>
         <p className="mt-2 font-bold text-ink/80">{players.length} لاعبين جاهزين</p>
       </header>
