@@ -60,7 +60,7 @@ function Home() {
 
             {/* Right column: floating cards mosaic */}
             <div className="relative mx-auto hidden h-80 w-full max-w-md md:block">
-              {["م", "ا", "ز", "ن"].map((l, i) => {
+              {["و", "ل", "ي", "د"].map((l, i) => {
                 const positions = [
                   "right-4 top-2 rotate-[-8deg] bg-splash-teal",
                   "right-1/3 top-10 rotate-[6deg] bg-splash-yellow",

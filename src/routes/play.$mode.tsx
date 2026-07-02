@@ -5,8 +5,6 @@ import { GAME_MODES, type TopicCard } from "@/lib/game-data";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
 import { PopButton } from "@/components/GameCard";
 import { SiteNav } from "@/components/SiteNav";
-
-import { TimerRing, useTimer } from "@/components/Timer";
 import { GameIntro } from "@/components/GameIntro";
 
 export const Route = createFileRoute("/play/$mode")({
@@ -70,7 +68,6 @@ function PlayHero({ title, subtitle, emoji }: { title: string; subtitle: string;
   );
 }
 
-
 function Scoreboard() {
   const { players } = useGame();
   const sorted = [...players].sort((a, b) => b.score - a.score);
@@ -132,39 +129,77 @@ function DrawCard({
   );
 }
 
+/* ============ Reusable win/lose picker ============ */
+function WinLosePicker({
+  onWin,
+  onLose,
+  winLabel = "كسب ✓",
+  loseLabel = "خسر ✗",
+}: {
+  onWin: (player: Player) => void;
+  onLose: (player: Player) => void;
+  winLabel?: string;
+  loseLabel?: string;
+}) {
+  const { players } = useGame();
+  const [selectedId, setSelectedId] = useState<string>(players[0]?.id ?? "");
+  const selected = players.find((p) => p.id === selectedId) ?? players[0];
+
+  return (
+    <div className="rounded-3xl bg-card p-4 space-y-3">
+      <p className="text-center font-bold text-ink">اختر اللاعب:</p>
+      <div className="flex flex-wrap justify-center gap-2">
+        {players.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => setSelectedId(p.id)}
+            className={`rounded-full px-4 py-2 font-bold text-sm ${
+              p.id === selectedId ? "bg-primary text-primary-foreground" : "bg-muted text-ink"
+            }`}
+          >
+            {p.name}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-2 pt-2">
+        <PopButton variant="accent" onClick={() => selected && onWin(selected)}>
+          {winLabel}
+        </PopButton>
+        <PopButton variant="secondary" onClick={() => selected && onLose(selected)}>
+          {loseLabel}
+        </PopButton>
+      </div>
+    </div>
+  );
+}
 
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
-  const { players, addScore } = useGame();
+  const { addScore } = useGame();
   const [round, setRound] = useState(1);
-  const [phase, setPhase] = useState<"deal" | "draw" | "bid" | "answer" | "result">("deal");
+  const [phase, setPhase] = useState<"deal" | "play" | "result">("deal");
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
-  const [winnerIdx, setWinnerIdx] = useState(0);
-  const [bid, setBid] = useState(1);
-  const [delivered, setDelivered] = useState(0);
-  const timer = useTimer(30);
+  const [lastName, setLastName] = useState<string>("");
+  const [lastPts, setLastPts] = useState<number>(0);
 
   function dealAndDraw() {
     const t = pickTopic();
     setTopic(t);
     setLetter(t.needsLetter ? pickLetter() : null);
-    setPhase("bid");
-    setBid(1);
-    setWinnerIdx(0);
-    setDelivered(0);
-    timer.reset(30);
+    setPhase("play");
   }
 
-  function scoreFor(n: number) {
-    if (n <= 10) return 10;
-    if (n <= 20) return 20;
-    return 30;
+  function handleWin(p: Player) {
+    addScore(p.id, 20);
+    setLastName(p.name);
+    setLastPts(20);
+    setPhase("result");
   }
-
-  function finish(success: boolean) {
-    const pts = scoreFor(bid);
-    addScore(players[winnerIdx].id, success ? pts : -pts);
+  function handleLose(p: Player) {
+    addScore(p.id, -10);
+    setLastName(p.name);
+    setLastPts(-10);
     setPhase("result");
   }
 
@@ -186,59 +221,11 @@ function AuctionMode() {
     );
   }
 
-
-  if (phase === "bid" && topic) {
+  if (phase === "play" && topic) {
     return (
       <div className="space-y-5">
         <DrawCard topic={topic} letter={letter} badge={"المزاد · جولة " + round} />
-        <div className="rounded-3xl bg-card p-5 text-center">
-          <p className="font-bold text-ink">المزايد الفايز:</p>
-          <div className="my-3 flex flex-wrap justify-center gap-2">
-            {players.map((p, i) => (
-              <button
-                key={p.id}
-                onClick={() => setWinnerIdx(i)}
-                className={`rounded-full px-4 py-2 font-bold ${i === winnerIdx ? "bg-primary text-primary-foreground" : "bg-muted text-ink"}`}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
-          <p className="mt-3 font-bold text-ink">عدد الإجابات اللي وعد بيها:</p>
-          <div className="my-3 flex items-center justify-center gap-3">
-            <button onClick={() => setBid(Math.max(1, bid - 1))} className="h-12 w-12 rounded-full bg-secondary text-3xl font-black text-white">−</button>
-            <div className="w-24 rounded-2xl bg-accent py-3 text-4xl font-black text-ink">{bid}</div>
-            <button onClick={() => setBid(bid + 1)} className="h-12 w-12 rounded-full bg-secondary text-3xl font-black text-white">＋</button>
-          </div>
-          <p className="text-sm text-muted-foreground">على {scoreFor(bid)} نقطة (ربح أو خسارة)</p>
-          <PopButton onClick={() => { setPhase("answer"); timer.reset(30); timer.start(); }} className="mt-4 w-full">ابدأ التايمر ⏱️</PopButton>
-        </div>
-      </div>
-    );
-  }
-
-  if (phase === "answer" && topic) {
-    return (
-      <div className="space-y-4 text-center">
-        <p className="text-xl font-black text-ink">{players[winnerIdx].name} بيجاوب</p>
-        <DrawCard topic={topic} letter={letter} badge={"جاوب! · " + bid} />
-        <TimerRing time={timer.time} max={30} />
-        <div className="rounded-2xl bg-card p-4">
-          <p className="font-bold text-ink">عدد اللي قاله صح:</p>
-          <div className="my-2 flex items-center justify-center gap-3">
-            <button onClick={() => setDelivered(Math.max(0, delivered - 1))} className="h-10 w-10 rounded-full bg-secondary text-2xl text-white">−</button>
-            <div className="w-20 rounded-2xl bg-muted py-2 text-3xl font-black">{delivered}</div>
-            <button onClick={() => setDelivered(delivered + 1)} className="h-10 w-10 rounded-full bg-secondary text-2xl text-white">＋</button>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <PopButton variant="secondary" onClick={() => finish(delivered >= bid)}>
-            خلصت ⏹️
-          </PopButton>
-          <PopButton onClick={() => { timer.running ? timer.pause() : timer.start(); }} variant="accent">
-            {timer.running ? "إيقاف" : "تشغيل"}
-          </PopButton>
-        </div>
+        <WinLosePicker onWin={handleWin} onLose={handleLose} winLabel="كسب +20" loseLabel="خسر −10" />
       </div>
     );
   }
@@ -248,8 +235,8 @@ function AuctionMode() {
       <div className="space-y-4 text-center">
         <div className="rounded-3xl bg-card p-6">
           <h2 className="mb-2 text-3xl text-primary">انتهت الجولة!</h2>
-          <p className="text-lg font-bold text-ink">{players[winnerIdx].name}</p>
-          <p className="mt-1">قال {delivered} من {bid}</p>
+          <p className="text-lg font-bold text-ink">{lastName}</p>
+          <p className="mt-1 font-bold">{lastPts >= 0 ? `+${lastPts}` : lastPts} نقطة</p>
         </div>
         {round < 5 ? (
           <PopButton onClick={nextRound} className="w-full">الجولة الجاية ←</PopButton>
@@ -262,75 +249,37 @@ function AuctionMode() {
   return null;
 }
 
-/* ============ Shared elimination logic ============ */
-function useElimination() {
-  const { players, addScore } = useGame();
-  const [alive, setAlive] = useState(players.map((p) => p.id));
-  const [current, setCurrent] = useState(0);
-  const remaining = alive.length;
-  const currentPlayer = players.find((p) => p.id === alive[current % alive.length])!;
-
-  function eliminate() {
-    const newAlive = alive.filter((_, i) => i !== current % alive.length);
-    setAlive(newAlive);
-    if (newAlive.length === 0) setCurrent(0);
-    else setCurrent(current % newAlive.length);
-  }
-
-  function next() {
-    setCurrent((c) => (c + 1) % alive.length);
-  }
-
-  function awardWinner(pts: number) {
-    if (alive.length === 1) addScore(alive[0], pts);
-  }
-
-  function reset() {
-    setAlive(players.map((p) => p.id));
-    setCurrent(0);
-  }
-
-  return { alive, currentPlayer, remaining, eliminate, next, awardWinner, reset, allPlayers: players };
-}
-
 /* ============ MODE 2: SURVIVAL ============ */
 function SurvivalMode() {
-  const elim = useElimination();
+  const { players, addScore } = useGame();
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
-  const timer = useTimer(3);
+  const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   function start() {
     const t = pickTopic();
     setTopic(t);
     setLetter(t.needsLetter ? pickLetter() : null);
-    elim.reset();
-    timer.reset(3);
-    timer.start();
+    setAlive(players.map((p) => p.id));
   }
 
-  useEffect(() => {
-    if (timer.time === 0 && timer.running) {
-      timer.pause();
-    }
-  }, [timer.time, timer.running, timer]);
+  const aliveList = players.filter((p) => alive.includes(p.id));
 
   if (!topic) {
     return (
       <div className="space-y-4 text-center">
-        <p className="rounded-2xl bg-card p-4 text-ink">دور سريع — 3 ثواني للإجابة. اللي يكرر أو يتأخر يخرج.</p>
+        <p className="rounded-2xl bg-card p-4 text-ink">دوّروا سريع — اللي يكرر أو يعجز يخرج. آخر واحد صامد يكسب.</p>
         <PopButton onClick={start} className="w-full">ابدأ الجولة 🎲</PopButton>
       </div>
     );
   }
 
-  if (elim.remaining === 1) {
-    const winner = elim.allPlayers.find((p) => p.id === elim.alive[0])!;
+  if (aliveList.length === 1) {
     return (
       <WinnerScreen
-        name={winner.name}
+        name={aliveList[0].name}
         pts={10}
-        onAward={() => elim.awardWinner(10)}
+        onAward={() => addScore(aliveList[0].id, 10)}
         onAgain={start}
       />
     );
@@ -338,25 +287,20 @@ function SurvivalMode() {
 
   return (
     <div className="space-y-4">
-      <DrawCard topic={topic} letter={letter} badge="بقاء · 3 ثواني" />
-      <div className="rounded-3xl bg-card p-4 text-center">
-        <p className="text-xl font-black text-primary">دور: {elim.currentPlayer.name}</p>
-        <TimerRing time={timer.time} max={3} />
-        <div className="grid grid-cols-2 gap-2">
-          <PopButton
-            variant="accent"
-            onClick={() => { timer.reset(3); timer.start(); elim.next(); }}
-          >
-            جاوب ✓ التالي
-          </PopButton>
-          <PopButton
-            variant="secondary"
-            onClick={() => { elim.eliminate(); timer.reset(3); timer.start(); }}
-          >
-            خرج ✗
-          </PopButton>
+      <DrawCard topic={topic} letter={letter} badge="بقاء" />
+      <div className="rounded-3xl bg-card p-4 space-y-3">
+        <p className="text-center font-bold text-ink">اللاعبين الصامدين ({aliveList.length}) — اختر اللي خرج:</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          {aliveList.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setAlive(alive.filter((id) => id !== p.id))}
+              className="rounded-full bg-destructive/10 px-4 py-2 font-bold text-sm text-ink border-2 border-destructive/40 hover:bg-destructive hover:text-white"
+            >
+              {p.name} خرج ✗
+            </button>
+          ))}
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">باقي {elim.remaining} لاعبين</p>
       </div>
     </div>
   );
@@ -370,8 +314,6 @@ function PingPongMode() {
   const [winners, setWinners] = useState<Player[]>([]);
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
-  const [turn, setTurn] = useState(0);
-  const timer = useTimer(5);
   const [champion, setChampion] = useState<Player | null>(null);
 
   function shuffle<T>(a: T[]) { return [...a].sort(() => Math.random() - 0.5); }
@@ -380,7 +322,7 @@ function PingPongMode() {
     const s = shuffle(roster);
     const out: Array<[Player, Player]> = [];
     for (let i = 0; i + 1 < s.length; i += 2) out.push([s[i], s[i + 1]]);
-    if (s.length % 2) out.push([s[s.length - 1], s[0]]); // bye → vs first
+    if (s.length % 2) out.push([s[s.length - 1], s[0]]);
     return out;
   }
 
@@ -396,9 +338,6 @@ function PingPongMode() {
     const t = pickTopic();
     setTopic(t);
     setLetter(t.needsLetter ? pickLetter() : null);
-    setTurn(0);
-    timer.reset(5);
-    timer.start();
   }
 
   function declareWinner(w: Player) {
@@ -408,7 +347,6 @@ function PingPongMode() {
       setPairIdx(pairIdx + 1);
       drawForPair();
     } else {
-      // next round or champion
       if (newWinners.length === 1) {
         setChampion(newWinners[0]);
         addScore(newWinners[0].id, 10);
@@ -443,31 +381,20 @@ function PingPongMode() {
   }
 
   const [a, b] = pairs[pairIdx];
-  const active = turn % 2 === 0 ? a : b;
-  const other = turn % 2 === 0 ? b : a;
 
   return (
     <div className="space-y-4">
       {topic && <DrawCard topic={topic} letter={letter} badge={`مواجهة ${pairIdx + 1}/${pairs.length}`} />}
-      <div className="rounded-3xl bg-card p-4 text-center">
+      <div className="rounded-3xl bg-card p-4 text-center space-y-3">
         <div className="flex items-center justify-around">
-          <div className={`flex-1 rounded-2xl p-2 ${turn % 2 === 0 ? "bg-primary text-white" : "bg-muted"}`}>
-            <div className="font-black">{a.name}</div>
-          </div>
+          <div className="flex-1 rounded-2xl p-2 bg-muted"><div className="font-black">{a.name}</div></div>
           <span className="px-2 text-2xl">🆚</span>
-          <div className={`flex-1 rounded-2xl p-2 ${turn % 2 === 1 ? "bg-primary text-white" : "bg-muted"}`}>
-            <div className="font-black">{b.name}</div>
-          </div>
+          <div className="flex-1 rounded-2xl p-2 bg-muted"><div className="font-black">{b.name}</div></div>
         </div>
-        <p className="mt-3 text-lg font-bold text-ink">دور: {active.name}</p>
-        <TimerRing time={timer.time} max={5} />
+        <p className="font-bold text-ink">مين كسب المواجهة؟</p>
         <div className="grid grid-cols-2 gap-2">
-          <PopButton variant="accent" onClick={() => { setTurn(turn + 1); timer.reset(5); timer.start(); }}>
-            ✓ ردّ سليم
-          </PopButton>
-          <PopButton variant="secondary" onClick={() => declareWinner(other)}>
-            خسر {active.name} ✗
-          </PopButton>
+          <PopButton variant="accent" onClick={() => declareWinner(a)}>{a.name} كسب ✓</PopButton>
+          <PopButton variant="accent" onClick={() => declareWinner(b)}>{b.name} كسب ✓</PopButton>
         </div>
       </div>
     </div>
@@ -476,43 +403,41 @@ function PingPongMode() {
 
 /* ============ MODE 4: HAT-TRICK ============ */
 function HatTrickMode() {
-  const elim = useElimination();
+  const { players, addScore } = useGame();
   const [topics, setTopics] = useState<TopicCard[]>([]);
   const [letter, setLetter] = useState<string | null>(null);
-  const timer = useTimer(10);
+  const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   const hasLetter = useMemo(() => topics.length > 0 && topics.every((t) => t.needsLetter), [topics]);
-  const limit = hasLetter ? 10 : 5;
 
   function start() {
     const t = pickTopics(3);
     setTopics(t);
     const allLetter = t.every((x) => x.needsLetter);
     setLetter(allLetter ? pickLetter() : null);
-    elim.reset();
-    timer.reset(allLetter ? 10 : 5);
-    timer.start();
+    setAlive(players.map((p) => p.id));
   }
+
+  const aliveList = players.filter((p) => alive.includes(p.id));
 
   if (topics.length === 0) {
     return (
       <div className="space-y-4 text-center">
-        <p className="rounded-2xl bg-card p-4 text-ink">3 مواضيع + حرف واحد. اربطهم كلهم في الوقت!</p>
+        <p className="rounded-2xl bg-card p-4 text-ink">3 مواضيع + حرف واحد. اربطهم كلهم!</p>
         <PopButton onClick={start} className="w-full">ابدأ الهاتريك 🎩</PopButton>
       </div>
     );
   }
 
-  if (elim.remaining === 1) {
-    const winner = elim.allPlayers.find((p) => p.id === elim.alive[0])!;
-    return <WinnerScreen name={winner.name} pts={10} onAward={() => elim.awardWinner(10)} onAgain={start} />;
+  if (aliveList.length === 1) {
+    return <WinnerScreen name={aliveList[0].name} pts={10} onAward={() => addScore(aliveList[0].id, 10)} onAgain={start} />;
   }
 
   return (
     <div className="space-y-4">
       <div className="card-splash rounded-3xl p-3 shadow-xl">
         <div className="rounded-2xl bg-cream p-4">
-          {letter && (
+          {letter && hasLetter && (
             <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-5xl font-black text-white shadow">
               {letter}
             </div>
@@ -527,16 +452,18 @@ function HatTrickMode() {
           </div>
         </div>
       </div>
-      <div className="rounded-3xl bg-card p-4 text-center">
-        <p className="text-xl font-black text-primary">دور: {elim.currentPlayer.name}</p>
-        <TimerRing time={timer.time} max={limit} />
-        <div className="grid grid-cols-2 gap-2">
-          <PopButton variant="accent" onClick={() => { timer.reset(limit); timer.start(); elim.next(); }}>
-            قفل التلاتة ✓
-          </PopButton>
-          <PopButton variant="secondary" onClick={() => { elim.eliminate(); timer.reset(limit); timer.start(); }}>
-            خرج ✗
-          </PopButton>
+      <div className="rounded-3xl bg-card p-4 space-y-3">
+        <p className="text-center font-bold text-ink">اختر اللي فشل في الهاتريك:</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          {aliveList.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setAlive(alive.filter((id) => id !== p.id))}
+              className="rounded-full bg-destructive/10 px-4 py-2 font-bold text-sm text-ink border-2 border-destructive/40 hover:bg-destructive hover:text-white"
+            >
+              {p.name} خرج ✗
+            </button>
+          ))}
         </div>
       </div>
     </div>
@@ -545,18 +472,18 @@ function HatTrickMode() {
 
 /* ============ MODE 5: CHAIN ============ */
 function ChainMode() {
-  const elim = useElimination();
+  const { players, addScore } = useGame();
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [last, setLast] = useState<string>("");
-  const timer = useTimer(3);
+  const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   function start() {
     setTopic(pickTopic());
     setLast("");
-    elim.reset();
-    timer.reset(3);
-    timer.start();
+    setAlive(players.map((p) => p.id));
   }
+
+  const aliveList = players.filter((p) => alive.includes(p.id));
 
   if (!topic) {
     return (
@@ -567,9 +494,8 @@ function ChainMode() {
     );
   }
 
-  if (elim.remaining === 1) {
-    const winner = elim.allPlayers.find((p) => p.id === elim.alive[0])!;
-    return <WinnerScreen name={winner.name} pts={10} onAward={() => elim.awardWinner(10)} onAgain={start} />;
+  if (aliveList.length === 1) {
+    return <WinnerScreen name={aliveList[0].name} pts={10} onAward={() => addScore(aliveList[0].id, 10)} onAgain={start} />;
   }
 
   function lastLetter(word: string) {
@@ -581,13 +507,13 @@ function ChainMode() {
   return (
     <div className="space-y-4">
       <DrawCard topic={topic} letter={null} badge="السلسلة 🔗" />
-      <div className="rounded-3xl bg-card p-4 text-center">
+      <div className="rounded-3xl bg-card p-4 text-center space-y-3">
         <p className="text-sm text-muted-foreground">آخر كلمة:</p>
         <input
           value={last}
           onChange={(e) => setLast(e.target.value)}
           placeholder="اكتب الكلمة"
-          className="my-2 w-full rounded-2xl border-2 border-input bg-muted px-3 py-2 text-center text-2xl font-black text-ink outline-none"
+          className="w-full rounded-2xl border-2 border-input bg-muted px-3 py-2 text-center text-2xl font-black text-ink outline-none"
         />
         {last && (
           <p className="text-lg font-bold text-primary">
@@ -595,15 +521,17 @@ function ChainMode() {
             <span className="rounded-full bg-accent px-3 py-1 text-2xl text-ink">{lastLetter(last) || "؟"}</span>
           </p>
         )}
-        <p className="mt-3 text-xl font-black text-ink">دور: {elim.currentPlayer.name}</p>
-        <TimerRing time={timer.time} max={3} />
-        <div className="grid grid-cols-2 gap-2">
-          <PopButton variant="accent" onClick={() => { timer.reset(3); timer.start(); elim.next(); }}>
-            جاوب ✓ التالي
-          </PopButton>
-          <PopButton variant="secondary" onClick={() => { elim.eliminate(); timer.reset(3); timer.start(); }}>
-            خرج ✗
-          </PopButton>
+        <p className="pt-2 font-bold text-ink">اختر اللي فشل:</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          {aliveList.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => { setAlive(alive.filter((id) => id !== p.id)); setLast(""); }}
+              className="rounded-full bg-destructive/10 px-4 py-2 font-bold text-sm text-ink border-2 border-destructive/40 hover:bg-destructive hover:text-white"
+            >
+              {p.name} خرج ✗
+            </button>
+          ))}
         </div>
       </div>
     </div>
