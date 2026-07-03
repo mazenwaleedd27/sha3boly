@@ -177,7 +177,7 @@ function WinLosePicker({
 function AuctionMode() {
   const { players, addScore, giveRandomCard } = useGame();
   const [round, setRound] = useState(1);
-  const [phase, setPhase] = useState<"cards" | "bid" | "play" | "result">("cards");
+  const [phase, setPhase] = useState<"cards" | "topic" | "bid" | "play" | "result">("cards");
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string>("");
