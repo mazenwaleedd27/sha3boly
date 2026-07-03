@@ -192,6 +192,13 @@ function AuctionMode() {
     setDealtIds([...dealtIds, id]);
   }
 
+  function goToTopic() {
+    const t = pickTopic();
+    setTopic(t);
+    setLetter(t.needsLetter ? pickLetter() : null);
+    setPhase("topic");
+  }
+
   function goToBid() {
     setBidderId(players[0]?.id ?? "");
     setBidAmount(5);
@@ -200,11 +207,9 @@ function AuctionMode() {
 
   function confirmBid() {
     if (!bidderId) return;
-    const t = pickTopic();
-    setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
     setPhase("play");
   }
+
 
   function winPoints(bid: number) {
     if (bid >= 30) return 30;
