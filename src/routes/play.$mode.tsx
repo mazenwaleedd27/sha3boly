@@ -322,7 +322,7 @@ function AuctionMode() {
           </div>
         )}
         <DrawCard topic={topic} letter={letter} badge={"المزاد · جولة " + round} />
-        <WinLosePicker onWin={handleWin} onLose={handleLose} winLabel="كسب +20" loseLabel="خسر −10" />
+        <WinLosePicker onWin={handleWin} onLose={handleLose} winLabel={`كسب +${winPoints(bidAmount)}`} loseLabel="خسر −10" />
       </div>
     );
   }
