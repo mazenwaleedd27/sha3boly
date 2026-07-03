@@ -177,7 +177,7 @@ function WinLosePicker({
 function AuctionMode() {
   const { players, addScore, giveRandomCard } = useGame();
   const [round, setRound] = useState(1);
-  const [phase, setPhase] = useState<"cards" | "bid" | "play" | "result">("cards");
+  const [phase, setPhase] = useState<"cards" | "topic" | "bid" | "play" | "result">("cards");
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string>("");
@@ -192,6 +192,13 @@ function AuctionMode() {
     setDealtIds([...dealtIds, id]);
   }
 
+  function goToTopic() {
+    const t = pickTopic();
+    setTopic(t);
+    setLetter(t.needsLetter ? pickLetter() : null);
+    setPhase("topic");
+  }
+
   function goToBid() {
     setBidderId(players[0]?.id ?? "");
     setBidAmount(5);
@@ -200,11 +207,9 @@ function AuctionMode() {
 
   function confirmBid() {
     if (!bidderId) return;
-    const t = pickTopic();
-    setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
     setPhase("play");
   }
+
 
   function winPoints(bid: number) {
     if (bid >= 30) return 30;
@@ -259,12 +264,24 @@ function AuctionMode() {
             })}
           </div>
         </div>
-        <PopButton onClick={goToBid} disabled={!allDealt} className="w-full">
-          للمزاد ←
+        <PopButton onClick={goToTopic} disabled={!allDealt} className="w-full">
+          اسحب الموضوع 🎴
         </PopButton>
       </div>
     );
   }
+
+  if (phase === "topic" && topic) {
+    return (
+      <div className="space-y-4">
+        <DrawCard topic={topic} letter={letter} badge={"الموضوع · جولة " + round} />
+        <PopButton onClick={goToBid} className="w-full">
+          ابدأ المزاد 🔨
+        </PopButton>
+      </div>
+    );
+  }
+
 
   if (phase === "bid") {
     return (
