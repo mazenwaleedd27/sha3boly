@@ -264,12 +264,24 @@ function AuctionMode() {
             })}
           </div>
         </div>
-        <PopButton onClick={goToBid} disabled={!allDealt} className="w-full">
-          للمزاد ←
+        <PopButton onClick={goToTopic} disabled={!allDealt} className="w-full">
+          اسحب الموضوع 🎴
         </PopButton>
       </div>
     );
   }
+
+  if (phase === "topic" && topic) {
+    return (
+      <div className="space-y-4">
+        <DrawCard topic={topic} letter={letter} badge={"الموضوع · جولة " + round} />
+        <PopButton onClick={goToBid} className="w-full">
+          ابدأ المزاد 🔨
+        </PopButton>
+      </div>
+    );
+  }
+
 
   if (phase === "bid") {
     return (
