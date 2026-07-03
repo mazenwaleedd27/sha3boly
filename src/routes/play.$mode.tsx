@@ -206,12 +206,20 @@ function AuctionMode() {
     setPhase("play");
   }
 
+  function winPoints(bid: number) {
+    if (bid >= 30) return 30;
+    if (bid >= 21 && bid <= 29) return 20;
+    return 10;
+  }
+
   function handleWin(p: Player) {
-    addScore(p.id, 20);
+    const pts = winPoints(bidAmount);
+    addScore(p.id, pts);
     setLastName(p.name);
-    setLastPts(20);
+    setLastPts(pts);
     setPhase("result");
   }
+
   function handleLose(p: Player) {
     addScore(p.id, -10);
     setLastName(p.name);
