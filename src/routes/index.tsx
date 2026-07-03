@@ -58,43 +58,40 @@ function Home() {
               </div>
             </div>
 
-            {/* Right column: floating cards mosaic */}
-            <div className="relative mx-auto hidden h-96 w-full max-w-md md:block">
-              {/* Top row: م ا ز ن */}
-              {["م", "ا", "ز", "ن"].map((l, i) => {
-                const positions = [
-                  "right-4 top-2 rotate-[-8deg] bg-splash-teal",
-                  "right-1/3 top-10 rotate-[6deg] bg-splash-yellow",
-                  "right-2/3 top-4 rotate-[-12deg] bg-splash-pink",
-                  "right-1/4 top-20 rotate-[10deg] bg-splash-orange",
-                ];
-                return (
+            {/* Right column: two clean rows of letters */}
+            <div className="mx-auto hidden w-full max-w-md space-y-4 md:block">
+              <div className="grid grid-cols-4 gap-3">
+                {[
+                  { l: "م", c: "bg-splash-teal", r: "-rotate-6" },
+                  { l: "ا", c: "bg-splash-yellow", r: "rotate-3" },
+                  { l: "ز", c: "bg-splash-pink", r: "-rotate-3" },
+                  { l: "ن", c: "bg-splash-orange", r: "rotate-6" },
+                ].map((x) => (
                   <div
-                    key={`m-${l}`}
-                    className={`absolute flex h-28 w-20 items-center justify-center rounded-2xl border-4 border-white text-5xl font-black text-white shadow-2xl ${positions[i]}`}
+                    key={`m-${x.l}`}
+                    className={`flex h-28 items-center justify-center rounded-2xl border-4 border-white text-5xl font-black text-white shadow-2xl ${x.c} ${x.r}`}
                   >
-                    {l}
+                    {x.l}
                   </div>
-                );
-              })}
-              {/* Bottom row: و ل ي د */}
-              {["و", "ل", "ي", "د"].map((l, i) => {
-                const positions = [
-                  "right-6 bottom-4 rotate-[8deg] bg-splash-orange",
-                  "right-1/3 bottom-14 rotate-[-6deg] bg-splash-pink",
-                  "right-2/3 bottom-6 rotate-[12deg] bg-splash-yellow",
-                  "right-1/4 bottom-20 rotate-[-10deg] bg-splash-teal",
-                ];
-                return (
+                ))}
+              </div>
+              <div className="grid grid-cols-4 gap-3">
+                {[
+                  { l: "و", c: "bg-splash-orange", r: "rotate-6" },
+                  { l: "ل", c: "bg-splash-pink", r: "-rotate-3" },
+                  { l: "ي", c: "bg-splash-yellow", r: "rotate-3" },
+                  { l: "د", c: "bg-splash-teal", r: "-rotate-6" },
+                ].map((x) => (
                   <div
-                    key={`w-${l}`}
-                    className={`absolute flex h-28 w-20 items-center justify-center rounded-2xl border-4 border-white text-5xl font-black text-white shadow-2xl ${positions[i]}`}
+                    key={`w-${x.l}`}
+                    className={`flex h-28 items-center justify-center rounded-2xl border-4 border-white text-5xl font-black text-white shadow-2xl ${x.c} ${x.r}`}
                   >
-                    {l}
+                    {x.l}
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
+
           </div>
 
           {/* Character + CTA */}
