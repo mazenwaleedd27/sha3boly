@@ -175,15 +175,31 @@ function WinLosePicker({
 
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
-  const { addScore } = useGame();
+  const { players, addScore, giveRandomCard } = useGame();
   const [round, setRound] = useState(1);
-  const [phase, setPhase] = useState<"deal" | "play" | "result">("deal");
+  const [phase, setPhase] = useState<"cards" | "bid" | "play" | "result">("cards");
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string>("");
   const [lastPts, setLastPts] = useState<number>(0);
+  const [dealtIds, setDealtIds] = useState<string[]>([]);
+  const [bidAmount, setBidAmount] = useState<number>(5);
+  const [bidderId, setBidderId] = useState<string>("");
 
-  function dealAndDraw() {
+  function dealCardTo(id: string) {
+    if (dealtIds.includes(id)) return;
+    giveRandomCard(id);
+    setDealtIds([...dealtIds, id]);
+  }
+
+  function goToBid() {
+    setBidderId(players[0]?.id ?? "");
+    setBidAmount(5);
+    setPhase("bid");
+  }
+
+  function confirmBid() {
+    if (!bidderId) return;
     const t = pickTopic();
     setTopic(t);
     setLetter(t.needsLetter ? pickLetter() : null);
@@ -206,24 +222,97 @@ function AuctionMode() {
   function nextRound() {
     if (round >= 5) return;
     setRound(round + 1);
-    setPhase("deal");
+    setDealtIds([]);
+    setPhase("cards");
   }
 
-  if (phase === "deal") {
+  if (phase === "cards") {
+    const allDealt = dealtIds.length === players.length;
     return (
-      <div className="space-y-4 text-center">
+      <div className="space-y-4">
         <RoundBadge round={round} total={5} />
-        <p className="rounded-2xl bg-card p-4 text-ink">
-          جاهزين للجولة؟ هنسحب موضوع جديد وتبدأوا تزايدوا.
-        </p>
-        <PopButton onClick={dealAndDraw} className="w-full">اسحب الموضوع 🎴</PopButton>
+        <div className="rounded-3xl bg-card p-4 space-y-3">
+          <p className="text-center font-bold text-ink">وزع الكروت — كل لاعب ياخد كارت:</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {players.map((p) => {
+              const done = dealtIds.includes(p.id);
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => dealCardTo(p.id)}
+                  disabled={done}
+                  className={`rounded-full px-4 py-2 font-bold text-sm ${
+                    done ? "bg-accent text-accent-foreground" : "bg-muted text-ink"
+                  }`}
+                >
+                  {p.name} {done ? "✓" : "🎴"}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <PopButton onClick={goToBid} disabled={!allDealt} className="w-full">
+          للمزاد ←
+        </PopButton>
+      </div>
+    );
+  }
+
+  if (phase === "bid") {
+    return (
+      <div className="space-y-4">
+        <RoundBadge round={round} total={5} />
+        <div className="rounded-3xl bg-card p-4 space-y-4 text-center">
+          <h2 className="text-2xl text-primary">المزاد 🔨</h2>
+          <div>
+            <p className="mb-2 font-bold text-ink">العدد اللي اتقال:</p>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setBidAmount(Math.max(1, bidAmount - 1))}
+                className="h-12 w-12 rounded-full bg-muted text-2xl font-black text-ink"
+              >−</button>
+              <div className="flex h-20 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary to-primary text-4xl font-black text-white shadow">
+                {bidAmount}
+              </div>
+              <button
+                onClick={() => setBidAmount(bidAmount + 1)}
+                className="h-12 w-12 rounded-full bg-muted text-2xl font-black text-ink"
+              >+</button>
+            </div>
+          </div>
+          <div>
+            <p className="mb-2 font-bold text-ink">مين اللي قال {bidAmount}؟</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {players.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setBidderId(p.id)}
+                  className={`rounded-full px-4 py-2 font-bold text-sm ${
+                    p.id === bidderId ? "bg-primary text-primary-foreground" : "bg-muted text-ink"
+                  }`}
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <PopButton onClick={confirmBid} disabled={!bidderId} className="w-full">
+          يلا نبدأ اللعبة 🎴
+        </PopButton>
       </div>
     );
   }
 
   if (phase === "play" && topic) {
+    const bidder = players.find((p) => p.id === bidderId);
     return (
       <div className="space-y-5">
+        {bidder && (
+          <div className="rounded-2xl bg-accent/60 p-3 text-center font-bold text-ink">
+            {bidder.name} قال {bidAmount} — يلا نشوف!
+          </div>
+        )}
         <DrawCard topic={topic} letter={letter} badge={"المزاد · جولة " + round} />
         <WinLosePicker onWin={handleWin} onLose={handleLose} winLabel="كسب +20" loseLabel="خسر −10" />
       </div>
@@ -248,6 +337,7 @@ function AuctionMode() {
   }
   return null;
 }
+
 
 /* ============ MODE 2: SURVIVAL ============ */
 function SurvivalMode() {
