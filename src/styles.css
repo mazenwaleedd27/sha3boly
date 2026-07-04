@@ -172,3 +172,24 @@
     0 0 40px #b026ff;
   animation: neon-flicker 3s infinite alternate;
 }
+
+@utility pop-title {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #fff59a 0%, #ffd23f 45%, #ff7a1a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 3px #fff;
+  paint-order: stroke fill;
+  filter:
+    drop-shadow(0 4px 0 #6b21a8)
+    drop-shadow(0 8px 0 #4c1d95)
+    drop-shadow(0 14px 18px rgba(0,0,0,0.5));
+  padding: 0 0.25em;
+}
+
