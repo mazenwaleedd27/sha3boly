@@ -67,21 +67,7 @@ function ModesPage() {
     <main className="min-h-dvh bg-[#FFB800]">
       <SiteNav />
 
-      <section
-        className="relative min-h-[calc(100dvh-64px)] overflow-hidden"
-        style={{
-          backgroundImage: `url(${backdrop})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-70"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 55% at 50% 30%, oklch(0.85 0.2 60 / 0.95), transparent 70%)",
-          }}
-        />
+      <section className="relative min-h-[calc(100dvh-64px)] overflow-hidden bg-[#FFB800]">
 
         <img
           src={boy}
