@@ -4,7 +4,7 @@ import { useGame } from "@/lib/game-store";
 import { SiteNav } from "@/components/SiteNav";
 import boy from "@/assets/kid-boy.png";
 import girl from "@/assets/kid-girl.png";
-import backdrop from "@/assets/game-backdrop.jpg";
+
 
 export const Route = createFileRoute("/start")({
   head: () => ({
@@ -33,7 +33,7 @@ function Start() {
   }
 
   return (
-    <main className="min-h-dvh bg-nav">
+    <main className="min-h-dvh bg-[#FFB800]">
       <SiteNav />
 
       <section

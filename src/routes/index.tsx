@@ -29,7 +29,7 @@ function Stat({ icon, top, bottom }: { icon: string; top: string; bottom: string
 
 function Home() {
   return (
-    <main className="min-h-dvh bg-cream">
+    <main className="min-h-dvh bg-[#FFB800]">
       <SiteNav active="home" />
 
       {/* HERO */}

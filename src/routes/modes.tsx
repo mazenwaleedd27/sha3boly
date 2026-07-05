@@ -5,7 +5,7 @@ import { SiteNav } from "@/components/SiteNav";
 import { useEffect } from "react";
 import boy from "@/assets/kid-boy.png";
 import girl from "@/assets/kid-girl.png";
-import backdrop from "@/assets/game-backdrop.jpg";
+
 
 export const Route = createFileRoute("/modes")({
   head: () => ({
@@ -64,7 +64,7 @@ function ModesPage() {
   }, [players.length, nav]);
 
   return (
-    <main className="min-h-dvh bg-nav">
+    <main className="min-h-dvh bg-[#FFB800]">
       <SiteNav />
 
       <section
