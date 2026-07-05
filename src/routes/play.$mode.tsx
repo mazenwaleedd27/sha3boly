@@ -30,7 +30,7 @@ function PlayPage() {
   if (!mode || players.length < 2) return null;
 
   return (
-    <main className="min-h-dvh bg-cream pb-28">
+    <main className="min-h-dvh bg-[#FFB800] pb-28">
       <SiteNav />
       <PlayHero title={mode.name} subtitle={mode.subtitle} emoji={mode.emoji} />
       <div className="mx-auto -mt-10 max-w-md px-4">

@@ -4,7 +4,7 @@ import { useGame } from "@/lib/game-store";
 import { SiteNav } from "@/components/SiteNav";
 import boy from "@/assets/kid-boy.png";
 import girl from "@/assets/kid-girl.png";
-import backdrop from "@/assets/game-backdrop.jpg";
+
 
 export const Route = createFileRoute("/start")({
   head: () => ({
@@ -33,24 +33,10 @@ function Start() {
   }
 
   return (
-    <main className="min-h-dvh bg-nav">
+    <main className="min-h-dvh bg-[#FFB800]">
       <SiteNav />
 
-      <section
-        className="relative min-h-[calc(100dvh-64px)] overflow-hidden"
-        style={{
-          backgroundImage: `url(${backdrop})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* rays overlay */}
-        <div className="pointer-events-none absolute inset-0 opacity-70"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 60% at 50% 40%, oklch(0.85 0.2 60 / 0.9), transparent 70%)",
-          }}
-        />
+      <section className="relative min-h-[calc(100dvh-64px)] overflow-hidden bg-[#FFB800]">
 
         {/* characters */}
         <img
