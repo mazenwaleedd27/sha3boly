@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
+import { FullscreenButton } from "./FullscreenButton";
 
 export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
   return (
-    <nav className="bg-nav">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-        <Link to="/" className="shrink-0 neon-brand">
+    <nav className="bg-nav" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+        <Link to="/" className="shrink-0 neon-brand text-lg sm:text-xl">
           مازن وليد
         </Link>
         <ul className="hidden items-center gap-6 text-white font-bold md:flex">
@@ -19,12 +20,15 @@ export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
           <li><a href="#story" className="opacity-90 hover:opacity-100">قصتي</a></li>
           <li><a href="#about" className="opacity-90 hover:opacity-100">عن اللعبة</a></li>
         </ul>
-        <Link
-          to="/start"
-          className="rounded-full bg-cta px-4 py-2 font-black text-ink shadow md:hidden"
-        >
-          ابدأ
-        </Link>
+        <div className="flex items-center gap-2">
+          <FullscreenButton />
+          <Link
+            to="/start"
+            className="rounded-full bg-cta px-4 py-2 font-black text-ink shadow md:hidden"
+          >
+            ابدأ
+          </Link>
+        </div>
       </div>
     </nav>
   );

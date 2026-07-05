@@ -72,7 +72,7 @@ function Scoreboard() {
   const { players } = useGame();
   const sorted = [...players].sort((a, b) => b.score - a.score);
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 border-t-4 border-primary bg-card/95 backdrop-blur">
+    <div className="fixed inset-x-0 bottom-0 z-20 border-t-4 border-primary bg-card/95 backdrop-blur" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="mx-auto flex max-w-md gap-2 overflow-x-auto px-3 py-2">
         {sorted.map((p, i) => (
           <div
