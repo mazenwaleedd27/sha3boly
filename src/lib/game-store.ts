@@ -27,8 +27,8 @@ type State = {
   removeCard: (id: string, idx: number) => void;
   clearAllCards: () => void;
   resetScores: () => void;
+  dealUniqueCards: () => void;
 
-};
 
 export const useGame = create<State>((set) => ({
   players: [],
