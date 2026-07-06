@@ -98,9 +98,10 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
   return (
     <div className="space-y-4">
       <div className="rounded-3xl bg-card p-4 text-center shadow">
-        <p className="text-sm text-muted-foreground">كروت</p>
+        <p className="text-sm text-muted-foreground">كارتك</p>
         <p className="text-2xl font-black text-primary">{current.name}</p>
-        <p className="mt-1 text-xs text-muted-foreground">احفظهم في دماغك ومتقولش لحد!</p>
+        <p className="mt-1 text-xs text-muted-foreground">اكتبه في ورقتك واخفيها معاك!</p>
+
       </div>
 
       <div className="space-y-6">
