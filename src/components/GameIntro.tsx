@@ -132,7 +132,8 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
 
 
       <PopButton onClick={nextPlayer} className="w-full text-lg" variant="secondary">
-        {isLast ? "خفيت كروتي · ابدأ اللعب 🚀" : `خفيت · ادي الموبايل لـ ${players[idx + 1].name} ←`}
+        {isLast ? "خفيت كارتي · ابدأ اللعب 🚀" : `خفيت · ادي الموبايل لـ ${players[idx + 1].name} ←`}
+
       </PopButton>
     </div>
   );
