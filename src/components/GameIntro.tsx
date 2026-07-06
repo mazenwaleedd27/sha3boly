@@ -11,7 +11,7 @@ import { PopButton } from "@/components/GameCard";
  * 3) آخر لاعب يدوس "ابدأ اللعب" فبيستدعي onDone().
  */
 export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void }) {
-  const { players, giveRandomCard, clearAllCards } = useGame();
+  const { players, dealUniqueCards } = useGame();
   const [stage, setStage] = useState<"explain" | "pass" | "reveal">("explain");
   const [idx, setIdx] = useState(0);
   const initialized = useRef(false);
@@ -21,7 +21,7 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
 
   function startDealing() {
     if (!initialized.current) {
-      clearAllCards();
+      dealUniqueCards();
       initialized.current = true;
     }
     setIdx(0);
@@ -29,9 +29,6 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
   }
 
   function reveal() {
-    // وزّع كارتين للاعب الحالي
-    giveRandomCard(current.id);
-    giveRandomCard(current.id);
     setStage("reveal");
   }
 
@@ -43,6 +40,7 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
     setIdx(idx + 1);
     setStage("pass");
   }
+
 
   if (stage === "explain") {
     return (
@@ -100,9 +98,10 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
   return (
     <div className="space-y-4">
       <div className="rounded-3xl bg-card p-4 text-center shadow">
-        <p className="text-sm text-muted-foreground">كروت</p>
+        <p className="text-sm text-muted-foreground">كارتك</p>
         <p className="text-2xl font-black text-primary">{current.name}</p>
-        <p className="mt-1 text-xs text-muted-foreground">احفظهم في دماغك ومتقولش لحد!</p>
+        <p className="mt-1 text-xs text-muted-foreground">اكتبه في ورقتك واخفيها معاك!</p>
+
       </div>
 
       <div className="space-y-6">
@@ -133,7 +132,8 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
 
 
       <PopButton onClick={nextPlayer} className="w-full text-lg" variant="secondary">
-        {isLast ? "خفيت كروتي · ابدأ اللعب 🚀" : `خفيت · ادي الموبايل لـ ${players[idx + 1].name} ←`}
+        {isLast ? "خفيت كارتي · ابدأ اللعب 🚀" : `خفيت · ادي الموبايل لـ ${players[idx + 1].name} ←`}
+
       </PopButton>
     </div>
   );

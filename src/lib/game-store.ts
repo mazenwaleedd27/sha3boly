@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { POWER_CARDS, type PowerCard, type GameMode } from "./game-data";
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export type Player = {
   id: string;
   name: string;
@@ -18,8 +27,10 @@ type State = {
   removeCard: (id: string, idx: number) => void;
   clearAllCards: () => void;
   resetScores: () => void;
-
+  dealUniqueCards: () => void;
 };
+
+
 
 export const useGame = create<State>((set) => ({
   players: [],
@@ -50,4 +61,11 @@ export const useGame = create<State>((set) => ({
 
   resetScores: () =>
     set((s) => ({ players: s.players.map((p) => ({ ...p, score: 0, cards: [] })) })),
+  dealUniqueCards: () =>
+    set((s) => {
+      const deck = shuffle(POWER_CARDS);
+      return {
+        players: s.players.map((p, i) => ({ ...p, cards: deck[i] ? [deck[i]] : [] })),
+      };
+    }),
 }));
