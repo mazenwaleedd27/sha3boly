@@ -11,7 +11,7 @@ import { PopButton } from "@/components/GameCard";
  * 3) آخر لاعب يدوس "ابدأ اللعب" فبيستدعي onDone().
  */
 export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void }) {
-  const { players, giveRandomCard, clearAllCards } = useGame();
+  const { players, dealUniqueCards } = useGame();
   const [stage, setStage] = useState<"explain" | "pass" | "reveal">("explain");
   const [idx, setIdx] = useState(0);
   const initialized = useRef(false);
@@ -21,7 +21,7 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
 
   function startDealing() {
     if (!initialized.current) {
-      clearAllCards();
+      dealUniqueCards();
       initialized.current = true;
     }
     setIdx(0);
@@ -29,9 +29,6 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
   }
 
   function reveal() {
-    // وزّع كارتين للاعب الحالي
-    giveRandomCard(current.id);
-    giveRandomCard(current.id);
     setStage("reveal");
   }
 
@@ -43,6 +40,7 @@ export function GameIntro({ mode, onDone }: { mode: GameMode; onDone: () => void
     setIdx(idx + 1);
     setStage("pass");
   }
+
 
   if (stage === "explain") {
     return (
