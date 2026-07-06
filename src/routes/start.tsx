@@ -62,26 +62,27 @@ function Start() {
 
           {/* Card */}
           <div className="relative mt-8 w-full max-w-xl">
-            <div className="rounded-[2.5rem] border-[6px] border-accent bg-white/95 p-6 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)]">
-              <div className="flex gap-3">
-                <button
-                  onClick={add}
-                  aria-label="أضف لاعب"
-                  className="btn-pop btn-pop-active flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-nav text-3xl font-black text-white"
-                >
-                  ＋
-                </button>
-                <div className="flex flex-1 items-center rounded-2xl border-2 border-input bg-muted px-4">
-                  <span className="text-2xl">👤</span>
+            <div className="rounded-[2.5rem] border-[6px] border-accent bg-white/95 px-4 py-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] sm:px-6 sm:py-6">
+              <div className="flex items-center gap-2">
+                <div className="flex flex-1 items-center rounded-2xl border-2 border-input bg-muted px-3">
+                  <span className="text-xl">👤</span>
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && add()}
                     placeholder="اسم اللاعب"
-                    className="flex-1 bg-transparent px-3 py-3 text-lg font-bold text-ink outline-none"
+                    className="w-full min-w-0 flex-1 bg-transparent px-2 py-3 text-base font-bold text-ink outline-none"
                   />
                 </div>
+                <button
+                  onClick={add}
+                  aria-label="أضف لاعب"
+                  className="btn-pop btn-pop-active flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-nav text-2xl font-black text-white"
+                >
+                  ＋
+                </button>
               </div>
+
 
               <ul className="mt-5 space-y-2">
                 {list.map((n, i) => (
