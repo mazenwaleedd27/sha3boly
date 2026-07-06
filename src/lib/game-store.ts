@@ -61,4 +61,11 @@ export const useGame = create<State>((set) => ({
 
   resetScores: () =>
     set((s) => ({ players: s.players.map((p) => ({ ...p, score: 0, cards: [] })) })),
+  dealUniqueCards: () =>
+    set((s) => {
+      const deck = shuffle(POWER_CARDS);
+      return {
+        players: s.players.map((p, i) => ({ ...p, cards: deck[i] ? [deck[i]] : [] })),
+      };
+    }),
 }));
