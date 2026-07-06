@@ -28,6 +28,8 @@ type State = {
   clearAllCards: () => void;
   resetScores: () => void;
   dealUniqueCards: () => void;
+};
+
 
 
 export const useGame = create<State>((set) => ({
