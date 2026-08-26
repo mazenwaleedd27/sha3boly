@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useGame, type Player } from "@/lib/game-store";
 import { GAME_MODES, type TopicCard } from "@/lib/game-data";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
@@ -12,12 +12,65 @@ export const Route = createFileRoute("/play/$mode")({
   component: PlayPage,
 });
 
+/* هل اللعب بحرف ولا من غير حرف */
+const LetterModeContext = createContext<boolean>(true);
+const useLetterMode = () => useContext(LetterModeContext);
+
+function LetterChoice({ onPick }: { onPick: (withLetter: boolean) => void }) {
+  return (
+    <div className="space-y-4">
+      <div className="card-splash rounded-3xl p-3 shadow-xl">
+        <div className="relative rounded-2xl bg-cream px-6 pb-6 pt-14 text-center">
+          <div className="absolute -top-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-3xl shadow-lg">
+            🔤
+          </div>
+          <h2 className="text-2xl font-black text-primary">هتلعبوا إزاي؟</h2>
+          <p className="mt-2 text-sm font-bold text-ink/80">
+            اختاروا: اللعب بحرف معين ولا من غير حرف خالص
+          </p>
+        </div>
+      </div>
+      <div className="grid gap-3">
+        <PopButton onClick={() => onPick(true)} className="w-full">بحرف 🔤</PopButton>
+        <PopButton variant="secondary" onClick={() => onPick(false)} className="w-full">
+          من غير حرف 🚫
+        </PopButton>
+      </div>
+    </div>
+  );
+}
+
+/* كارت الحرف اللي بيتعرض قبل الموضوع */
+function LetterCard({ letter, onDone }: { letter: string; onDone: () => void }) {
+  return (
+    <div className="space-y-4">
+      <div className="mx-auto inline-block rounded-full bg-primary px-4 py-1.5 text-sm font-black text-white shadow">
+        كارت الحرف
+      </div>
+      <div className="card-splash rounded-3xl p-3 shadow-xl">
+        <div className="relative rounded-2xl bg-cream px-6 pb-8 pt-14 text-center">
+          <div className="absolute -top-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-3xl shadow-lg">
+            🔤
+          </div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-primary/80">الحرف</p>
+          <div className="mx-auto my-4 flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-primary text-7xl font-black text-white shadow-xl">
+            {letter}
+          </div>
+          <p className="text-sm font-bold text-ink/80">كل الإجابات لازم تبدأ بالحرف ده</p>
+        </div>
+      </div>
+      <PopButton onClick={onDone} className="w-full">شوف الموضوع 🎴</PopButton>
+    </div>
+  );
+}
+
 function PlayPage() {
   const { mode: modeId } = Route.useParams();
   const mode = GAME_MODES.find((m) => m.id === modeId);
   const { players } = useGame();
   const nav = useNavigate();
   const [introDone, setIntroDone] = useState(false);
+  const [withLetter, setWithLetter] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!mode || players.length < 2) nav({ to: "/start" });
@@ -25,6 +78,7 @@ function PlayPage() {
 
   useEffect(() => {
     setIntroDone(false);
+    setWithLetter(null);
   }, [modeId]);
 
   if (!mode || players.length < 2) return null;
@@ -36,20 +90,23 @@ function PlayPage() {
       <div className="mx-auto -mt-10 max-w-md px-4">
         {!introDone ? (
           <GameIntro mode={mode} onDone={() => setIntroDone(true)} />
+        ) : withLetter === null ? (
+          <LetterChoice onPick={setWithLetter} />
         ) : (
-          <>
+          <LetterModeContext.Provider value={withLetter}>
             {mode.id === "auction" && <AuctionMode />}
             {mode.id === "survival" && <SurvivalMode />}
             {mode.id === "pingpong" && <PingPongMode />}
             {mode.id === "hattrick" && <HatTrickMode />}
             {mode.id === "chain" && <ChainMode />}
-          </>
+          </LetterModeContext.Provider>
         )}
       </div>
       <Scoreboard />
     </main>
   );
 }
+
 
 function PlayHero({ title, subtitle, emoji }: { title: string; subtitle: string; emoji: string }) {
   return (
