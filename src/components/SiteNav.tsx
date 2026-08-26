@@ -19,8 +19,18 @@ export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
           </li>
           <li><a href="#story" className="opacity-90 hover:opacity-100">قصتي</a></li>
           <li><a href="#about" className="opacity-90 hover:opacity-100">عن اللعبة</a></li>
+          <li>
+            <Link to="/admin" className="opacity-90 hover:opacity-100">لوحة التحكم</Link>
+          </li>
         </ul>
         <div className="flex items-center gap-2">
+          <Link
+            to="/admin"
+            aria-label="لوحة التحكم"
+            className="rounded-full bg-white/20 px-3 py-2 text-white md:hidden"
+          >
+            ⚙️
+          </Link>
           <FullscreenButton />
           <Link
             to="/start"

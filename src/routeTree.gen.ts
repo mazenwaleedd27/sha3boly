@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as ModesRouteImport } from './routes/modes'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlayModeRouteImport } from './routes/play.$mode'
 
@@ -22,6 +23,11 @@ const StartRoute = StartRouteImport.update({
 const ModesRoute = ModesRouteImport.update({
   id: '/modes',
   path: '/modes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const PlayModeRoute = PlayModeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/modes': typeof ModesRoute
   '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/modes': typeof ModesRoute
   '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/modes': typeof ModesRoute
   '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/modes' | '/start' | '/play/$mode'
+  fullPaths: '/' | '/admin' | '/modes' | '/start' | '/play/$mode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/modes' | '/start' | '/play/$mode'
-  id: '__root__' | '/' | '/modes' | '/start' | '/play/$mode'
+  to: '/' | '/admin' | '/modes' | '/start' | '/play/$mode'
+  id: '__root__' | '/' | '/admin' | '/modes' | '/start' | '/play/$mode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ModesRoute: typeof ModesRoute
   StartRoute: typeof StartRoute
   PlayModeRoute: typeof PlayModeRoute
@@ -85,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ModesRoute: ModesRoute,
   StartRoute: StartRoute,
   PlayModeRoute: PlayModeRoute,
