@@ -44,7 +44,8 @@ export const useGame = create<State>((set) => ({
     })),
   giveRandomCard: (id) =>
     set((s) => {
-      const card = POWER_CARDS[Math.floor(Math.random() * POWER_CARDS.length)];
+      const pool = getPowerCards();
+      const card = pool[Math.floor(Math.random() * pool.length)];
       return {
         players: s.players.map((p) =>
           p.id === id && p.cards.length < 2 ? { ...p, cards: [...p.cards, card] } : p,
@@ -64,7 +65,7 @@ export const useGame = create<State>((set) => ({
     set((s) => ({ players: s.players.map((p) => ({ ...p, score: 0, cards: [] })) })),
   dealUniqueCards: () =>
     set((s) => {
-      const deck = shuffle(POWER_CARDS);
+      const deck = shuffle(getPowerCards());
       return {
         players: s.players.map((p, i) => ({ ...p, cards: deck[i] ? [deck[i]] : [] })),
       };
