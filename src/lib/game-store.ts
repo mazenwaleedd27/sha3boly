@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { POWER_CARDS, type PowerCard, type GameMode } from "./game-data";
+import { type PowerCard, type GameMode } from "./game-data";
+import { getPowerCards } from "./content-store";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
