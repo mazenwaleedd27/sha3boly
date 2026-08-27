@@ -647,12 +647,17 @@ function HatTrickMode() {
 /* ============ MODE 5: CHAIN ============ */
 function ChainMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [topic, setTopic] = useState<TopicCard | null>(null);
+  const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [last, setLast] = useState<string>("");
   const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   function start() {
-    setTopic(pickTopic());
+    setTopic(pickTopic(withLetter ? true : undefined));
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setLast("");
     setAlive(players.map((p) => p.id));
   }
@@ -668,6 +673,10 @@ function ChainMode() {
     );
   }
 
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
+  }
+
   if (aliveList.length === 1) {
     return <WinnerScreen name={aliveList[0].name} pts={10} onAward={() => addScore(aliveList[0].id, 10)} onAgain={start} />;
   }
@@ -680,7 +689,7 @@ function ChainMode() {
 
   return (
     <div className="space-y-4">
-      <DrawCard topic={topic} letter={null} badge="السلسلة 🔗" />
+      <DrawCard topic={topic} letter={letter} badge="السلسلة 🔗" />
       <div className="rounded-3xl bg-card p-4 text-center space-y-3">
         <p className="text-sm text-muted-foreground">آخر كلمة:</p>
         <input
