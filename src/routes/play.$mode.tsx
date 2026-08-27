@@ -572,17 +572,19 @@ function PingPongMode() {
 /* ============ MODE 4: HAT-TRICK ============ */
 function HatTrickMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [topics, setTopics] = useState<TopicCard[]>([]);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
-  const hasLetter = useMemo(() => topics.length > 0 && topics.every((t) => t.needsLetter), [topics]);
+  const hasLetter = useMemo(() => topics.length > 0 && withLetter, [topics, withLetter]);
 
   function start() {
-    const t = pickTopics(3);
+    const t = pickTopics(3, withLetter ? true : undefined);
     setTopics(t);
-    const allLetter = t.every((x) => x.needsLetter);
-    setLetter(allLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setAlive(players.map((p) => p.id));
   }
 
@@ -595,6 +597,10 @@ function HatTrickMode() {
         <PopButton onClick={start} className="w-full">ابدأ الهاتريك 🎩</PopButton>
       </div>
     );
+  }
+
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
   }
 
   if (aliveList.length === 1) {
