@@ -233,10 +233,12 @@ function WinLosePicker({
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState<"topic" | "bid" | "play" | "result">("topic");
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [lastName, setLastName] = useState<string>("");
   const [lastPts, setLastPts] = useState<number>(0);
   const [bidAmount, setBidAmount] = useState<number>(5);
@@ -244,9 +246,10 @@ function AuctionMode() {
   const [drawn, setDrawn] = useState(false);
 
   function drawTopic() {
-    const t = pickTopic();
+    const t = pickTopic(withLetter ? true : undefined);
     setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setDrawn(true);
   }
 
@@ -288,6 +291,7 @@ function AuctionMode() {
     setRound(round + 1);
     setDrawn(false);
     setTopic(null);
+    setLetterSeen(false);
     setPhase("topic");
   }
 
@@ -297,10 +301,13 @@ function AuctionMode() {
         <div className="space-y-4">
           <RoundBadge round={round} total={5} />
           <PopButton onClick={drawTopic} className="w-full">
-            اسحب الموضوع 🎴
+            {withLetter ? "اسحب الحرف والموضوع 🎴" : "اسحب الموضوع 🎴"}
           </PopButton>
         </div>
       );
+    }
+    if (withLetter && !letterSeen && letter) {
+      return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
     }
     return (
       <div className="space-y-4">
@@ -399,14 +406,17 @@ function AuctionMode() {
 /* ============ MODE 2: SURVIVAL ============ */
 function SurvivalMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   function start() {
-    const t = pickTopic();
+    const t = pickTopic(withLetter ? true : undefined);
     setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setAlive(players.map((p) => p.id));
   }
 
@@ -419,6 +429,10 @@ function SurvivalMode() {
         <PopButton onClick={start} className="w-full">ابدأ الجولة 🎲</PopButton>
       </div>
     );
+  }
+
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
   }
 
   if (aliveList.length === 1) {
@@ -456,11 +470,13 @@ function SurvivalMode() {
 /* ============ MODE 3: PING PONG ============ */
 function PingPongMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [pairs, setPairs] = useState<Array<[Player, Player]>>([]);
   const [pairIdx, setPairIdx] = useState(0);
   const [winners, setWinners] = useState<Player[]>([]);
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [champion, setChampion] = useState<Player | null>(null);
 
   function shuffle<T>(a: T[]) { return [...a].sort(() => Math.random() - 0.5); }
@@ -482,9 +498,10 @@ function PingPongMode() {
   }
 
   function drawForPair() {
-    const t = pickTopic();
+    const t = pickTopic(withLetter ? true : undefined);
     setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
   }
 
   function declareWinner(w: Player) {
@@ -527,6 +544,10 @@ function PingPongMode() {
     );
   }
 
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
+  }
+
   const [a, b] = pairs[pairIdx];
 
   return (
@@ -551,17 +572,19 @@ function PingPongMode() {
 /* ============ MODE 4: HAT-TRICK ============ */
 function HatTrickMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [topics, setTopics] = useState<TopicCard[]>([]);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
-  const hasLetter = useMemo(() => topics.length > 0 && topics.every((t) => t.needsLetter), [topics]);
+  const hasLetter = useMemo(() => topics.length > 0 && withLetter, [topics, withLetter]);
 
   function start() {
-    const t = pickTopics(3);
+    const t = pickTopics(3, withLetter ? true : undefined);
     setTopics(t);
-    const allLetter = t.every((x) => x.needsLetter);
-    setLetter(allLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setAlive(players.map((p) => p.id));
   }
 
@@ -574,6 +597,10 @@ function HatTrickMode() {
         <PopButton onClick={start} className="w-full">ابدأ الهاتريك 🎩</PopButton>
       </div>
     );
+  }
+
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
   }
 
   if (aliveList.length === 1) {
@@ -620,12 +647,17 @@ function HatTrickMode() {
 /* ============ MODE 5: CHAIN ============ */
 function ChainMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [topic, setTopic] = useState<TopicCard | null>(null);
+  const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [last, setLast] = useState<string>("");
   const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   function start() {
-    setTopic(pickTopic());
+    setTopic(pickTopic(withLetter ? true : undefined));
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setLast("");
     setAlive(players.map((p) => p.id));
   }
@@ -641,6 +673,10 @@ function ChainMode() {
     );
   }
 
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
+  }
+
   if (aliveList.length === 1) {
     return <WinnerScreen name={aliveList[0].name} pts={10} onAward={() => addScore(aliveList[0].id, 10)} onAgain={start} />;
   }
@@ -653,7 +689,7 @@ function ChainMode() {
 
   return (
     <div className="space-y-4">
-      <DrawCard topic={topic} letter={null} badge="السلسلة 🔗" />
+      <DrawCard topic={topic} letter={letter} badge="السلسلة 🔗" />
       <div className="rounded-3xl bg-card p-4 text-center space-y-3">
         <p className="text-sm text-muted-foreground">آخر كلمة:</p>
         <input
