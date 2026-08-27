@@ -406,14 +406,17 @@ function AuctionMode() {
 /* ============ MODE 2: SURVIVAL ============ */
 function SurvivalMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [alive, setAlive] = useState<string[]>(players.map((p) => p.id));
 
   function start() {
-    const t = pickTopic();
+    const t = pickTopic(withLetter ? true : undefined);
     setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setAlive(players.map((p) => p.id));
   }
 
@@ -426,6 +429,10 @@ function SurvivalMode() {
         <PopButton onClick={start} className="w-full">ابدأ الجولة 🎲</PopButton>
       </div>
     );
+  }
+
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
   }
 
   if (aliveList.length === 1) {
