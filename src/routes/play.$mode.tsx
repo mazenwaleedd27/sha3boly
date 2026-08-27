@@ -470,11 +470,13 @@ function SurvivalMode() {
 /* ============ MODE 3: PING PONG ============ */
 function PingPongMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [pairs, setPairs] = useState<Array<[Player, Player]>>([]);
   const [pairIdx, setPairIdx] = useState(0);
   const [winners, setWinners] = useState<Player[]>([]);
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [champion, setChampion] = useState<Player | null>(null);
 
   function shuffle<T>(a: T[]) { return [...a].sort(() => Math.random() - 0.5); }
@@ -496,9 +498,10 @@ function PingPongMode() {
   }
 
   function drawForPair() {
-    const t = pickTopic();
+    const t = pickTopic(withLetter ? true : undefined);
     setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
   }
 
   function declareWinner(w: Player) {
