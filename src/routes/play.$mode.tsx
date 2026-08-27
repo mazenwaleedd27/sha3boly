@@ -544,6 +544,10 @@ function PingPongMode() {
     );
   }
 
+  if (withLetter && !letterSeen && letter) {
+    return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
+  }
+
   const [a, b] = pairs[pairIdx];
 
   return (
