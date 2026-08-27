@@ -291,6 +291,7 @@ function AuctionMode() {
     setRound(round + 1);
     setDrawn(false);
     setTopic(null);
+    setLetterSeen(false);
     setPhase("topic");
   }
 
@@ -300,10 +301,13 @@ function AuctionMode() {
         <div className="space-y-4">
           <RoundBadge round={round} total={5} />
           <PopButton onClick={drawTopic} className="w-full">
-            اسحب الموضوع 🎴
+            {withLetter ? "اسحب الحرف والموضوع 🎴" : "اسحب الموضوع 🎴"}
           </PopButton>
         </div>
       );
+    }
+    if (withLetter && !letterSeen && letter) {
+      return <LetterCard letter={letter} onDone={() => setLetterSeen(true)} />;
     }
     return (
       <div className="space-y-4">
