@@ -233,10 +233,12 @@ function WinLosePicker({
 /* ============ MODE 1: AUCTION ============ */
 function AuctionMode() {
   const { players, addScore } = useGame();
+  const withLetter = useLetterMode();
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState<"topic" | "bid" | "play" | "result">("topic");
   const [topic, setTopic] = useState<TopicCard | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
+  const [letterSeen, setLetterSeen] = useState(false);
   const [lastName, setLastName] = useState<string>("");
   const [lastPts, setLastPts] = useState<number>(0);
   const [bidAmount, setBidAmount] = useState<number>(5);
@@ -244,9 +246,10 @@ function AuctionMode() {
   const [drawn, setDrawn] = useState(false);
 
   function drawTopic() {
-    const t = pickTopic();
+    const t = pickTopic(withLetter ? true : undefined);
     setTopic(t);
-    setLetter(t.needsLetter ? pickLetter() : null);
+    setLetter(withLetter ? pickLetter() : null);
+    setLetterSeen(!withLetter);
     setDrawn(true);
   }
 
