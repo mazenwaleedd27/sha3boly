@@ -138,16 +138,16 @@ function AdminPanel() {
           <h1 className="font-display text-2xl font-black text-ink">⚙️ لوحة التحكم</h1>
           <div className="flex gap-2">
             <PopButton variant="accent" onClick={saveAll}>
-              {saved ? "اتحفظ ✓" : "حفظ"}
+              {busy ? "..." : saved ? "اتحفظ ✓" : "حفظ"}
             </PopButton>
             <PopButton
               variant="ghost"
-              onClick={() => {
+              onClick={async () => {
                 if (confirm("هترجع كل المحتوى للأصلي؟")) {
-                  resetAll();
-                  setCards(getPowerCards());
-                  setTopicsState(getTopics());
-                  setLettersState(getLetters());
+                  setBusy(true);
+                  await resetAll();
+                  hydrate();
+                  setBusy(false);
                 }
               }}
             >
