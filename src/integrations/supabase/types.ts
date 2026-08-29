@@ -14,7 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      game_cards: {
+        Row: {
+          created_at: string
+          description: string
+          emoji: string
+          id: string
+          kind: string
+          name: string
+          sort: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          emoji?: string
+          id?: string
+          kind?: string
+          name: string
+          sort?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          emoji?: string
+          id?: string
+          kind?: string
+          name?: string
+          sort?: number
+        }
+        Relationships: []
+      }
+      game_letters: {
+        Row: {
+          created_at: string
+          id: string
+          letter: string
+          sort: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          letter: string
+          sort?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          letter?: string
+          sort?: number
+        }
+        Relationships: []
+      }
+      game_topics: {
+        Row: {
+          category: string
+          created_at: string
+          hint: string
+          id: string
+          needs_letter: boolean
+          sort: number
+          title: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          hint?: string
+          id?: string
+          needs_letter?: boolean
+          sort?: number
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          hint?: string
+          id?: string
+          needs_letter?: boolean
+          sort?: number
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
