@@ -7,10 +7,11 @@ import {
   getLetters,
   getPowerCards,
   getTopics,
+  loadContent,
   resetAll,
-  setLetters,
-  setPowerCards,
-  setTopics,
+  saveLetters,
+  savePowerCards,
+  saveTopics,
 } from "@/lib/content-store";
 
 export const Route = createFileRoute("/admin")({
@@ -92,19 +93,35 @@ function AdminPanel() {
   const [topics, setTopicsState] = useState<TopicCard[]>([]);
   const [letters, setLettersState] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(true);
 
-  useEffect(() => {
+  function hydrate() {
     setCards(getPowerCards());
     setTopicsState(getTopics());
     setLettersState(getLetters());
+  }
+
+  useEffect(() => {
+    loadContent(true).then(() => {
+      hydrate();
+      setBusy(false);
+    });
   }, []);
 
-  function saveAll() {
-    setPowerCards(cards);
-    setTopics(topics);
-    setLetters(letters);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
+  async function saveAll() {
+    setBusy(true);
+    try {
+      await savePowerCards(cards);
+      await saveTopics(topics);
+      await saveLetters(letters);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch (e) {
+      console.error(e);
+      alert("حصلت مشكلة في الحفظ، جرّب تاني");
+    } finally {
+      setBusy(false);
+    }
   }
 
   const tabs: { id: Tab; label: string }[] = [
@@ -121,16 +138,16 @@ function AdminPanel() {
           <h1 className="font-display text-2xl font-black text-ink">⚙️ لوحة التحكم</h1>
           <div className="flex gap-2">
             <PopButton variant="accent" onClick={saveAll}>
-              {saved ? "اتحفظ ✓" : "حفظ"}
+              {busy ? "..." : saved ? "اتحفظ ✓" : "حفظ"}
             </PopButton>
             <PopButton
               variant="ghost"
-              onClick={() => {
+              onClick={async () => {
                 if (confirm("هترجع كل المحتوى للأصلي؟")) {
-                  resetAll();
-                  setCards(getPowerCards());
-                  setTopicsState(getTopics());
-                  setLettersState(getLetters());
+                  setBusy(true);
+                  await resetAll();
+                  hydrate();
+                  setBusy(false);
                 }
               }}
             >
