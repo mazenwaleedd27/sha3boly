@@ -93,19 +93,35 @@ function AdminPanel() {
   const [topics, setTopicsState] = useState<TopicCard[]>([]);
   const [letters, setLettersState] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(true);
 
-  useEffect(() => {
+  function hydrate() {
     setCards(getPowerCards());
     setTopicsState(getTopics());
     setLettersState(getLetters());
+  }
+
+  useEffect(() => {
+    loadContent(true).then(() => {
+      hydrate();
+      setBusy(false);
+    });
   }, []);
 
-  function saveAll() {
-    setPowerCards(cards);
-    setTopics(topics);
-    setLetters(letters);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
+  async function saveAll() {
+    setBusy(true);
+    try {
+      await savePowerCards(cards);
+      await saveTopics(topics);
+      await saveLetters(letters);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch (e) {
+      console.error(e);
+      alert("حصلت مشكلة في الحفظ، جرّب تاني");
+    } finally {
+      setBusy(false);
+    }
   }
 
   const tabs: { id: Tab; label: string }[] = [
