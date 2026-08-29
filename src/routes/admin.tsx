@@ -7,10 +7,11 @@ import {
   getLetters,
   getPowerCards,
   getTopics,
+  loadContent,
   resetAll,
-  setLetters,
-  setPowerCards,
-  setTopics,
+  saveLetters,
+  savePowerCards,
+  saveTopics,
 } from "@/lib/content-store";
 
 export const Route = createFileRoute("/admin")({
