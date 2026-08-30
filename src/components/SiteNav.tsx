@@ -41,16 +41,34 @@ export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
           <li>
             <Link to="/admin" className="opacity-90 hover:opacity-100">لوحة التحكم</Link>
           </li>
+          <li>
+            {signedIn ? (
+              <button onClick={signOut} className="opacity-90 hover:opacity-100">خروج</button>
+            ) : (
+              <Link to="/auth" className="opacity-90 hover:opacity-100">دخول</Link>
+            )}
+          </li>
         </ul>
         <div className="flex items-center gap-2">
-          <Link
-            to="/admin"
-            aria-label="لوحة التحكم"
-            className="rounded-full bg-white/20 px-3 py-2 text-white md:hidden"
-          >
-            ⚙️
-          </Link>
+          {signedIn ? (
+            <button
+              onClick={signOut}
+              aria-label="تسجيل خروج"
+              className="rounded-full bg-white/20 px-3 py-2 text-white md:hidden"
+            >
+              🚪
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              aria-label="تسجيل الدخول"
+              className="rounded-full bg-white/20 px-3 py-2 text-white md:hidden"
+            >
+              🔐
+            </Link>
+          )}
           <FullscreenButton />
+
           <Link
             to="/start"
             className="rounded-full bg-cta px-4 py-2 font-black text-ink shadow md:hidden"
