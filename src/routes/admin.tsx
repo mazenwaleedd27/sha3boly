@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { PopButton } from "@/components/GameCard";
+import { supabase } from "@/integrations/supabase/client";
 import type { PowerCard, TopicCard } from "@/lib/game-data";
 import {
   getLetters,
@@ -15,6 +16,7 @@ import {
 } from "@/lib/content-store";
 
 export const Route = createFileRoute("/admin")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "لوحة التحكم — شعبولي" },
@@ -29,52 +31,56 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const PASSWORD = "221976";
-
 function AdminPage() {
-  const [ok, setOk] = useState(false);
-  const [pass, setPass] = useState("");
-  const [err, setErr] = useState(false);
+  const navigate = useNavigate();
+  const [state, setState] = useState<"loading" | "ok" | "denied">("loading");
 
   useEffect(() => {
-    if (sessionStorage.getItem("shabouly:admin") === "1") setOk(true);
-  }, []);
+    let alive = true;
+    (async () => {
+      const { data: userRes } = await supabase.auth.getUser();
+      if (!alive) return;
+      if (!userRes.user) {
+        navigate({ to: "/auth", replace: true });
+        return;
+      }
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userRes.user.id);
+      if (!alive) return;
+      setState(roles?.some((r) => r.role === "admin") ? "ok" : "denied");
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [navigate]);
 
-  if (!ok) {
+  if (state === "loading") {
+    return (
+      <div className="min-h-screen bg-page">
+        <SiteNav />
+        <p className="py-20 text-center font-bold text-ink">جاري التحميل...</p>
+      </div>
+    );
+  }
+
+  if (state === "denied") {
     return (
       <div className="min-h-screen bg-page">
         <SiteNav />
         <div className="mx-auto max-w-sm px-4 py-16">
           <div className="rounded-3xl bg-cream p-6 text-center shadow-xl">
-            <h1 className="font-display text-2xl font-black text-ink">🔒 لوحة التحكم</h1>
-            <p className="mt-2 text-sm text-ink/70">الصفحة دي ليك انت بس</p>
-            <input
-              type="password"
-              inputMode="numeric"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  if (pass === PASSWORD) {
-                    sessionStorage.setItem("shabouly:admin", "1");
-                    setOk(true);
-                  } else setErr(true);
-                }
-              }}
-              placeholder="الباسورد"
-              className="mt-5 w-full rounded-2xl border-2 border-ink/10 bg-white px-4 py-3 text-center text-lg font-bold tracking-widest outline-none focus:border-primary"
-            />
-            {err && <p className="mt-2 text-sm font-bold text-red-600">باسورد غلط</p>}
+            <h1 className="font-display text-2xl font-black text-ink">🚫 غير مسموح</h1>
+            <p className="mt-2 text-sm text-ink/70">الحساب ده مش أدمن.</p>
             <PopButton
               className="mt-4 w-full"
-              onClick={() => {
-                if (pass === PASSWORD) {
-                  sessionStorage.setItem("shabouly:admin", "1");
-                  setOk(true);
-                } else setErr(true);
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate({ to: "/auth", replace: true });
               }}
             >
-              دخول
+              تسجيل خروج
             </PopButton>
           </div>
         </div>
@@ -84,6 +90,7 @@ function AdminPage() {
 
   return <AdminPanel />;
 }
+
 
 type Tab = "cards" | "topics" | "letters";
 
