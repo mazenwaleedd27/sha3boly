@@ -128,9 +128,10 @@ function AdminPanel() {
       await saveModes(modes);
       setSaved(true);
       setTimeout(() => setSaved(false), 1500);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("حصلت مشكلة في الحفظ، جرّب تاني");
+      alert(`حصلت مشكلة في الحفظ: ${e?.message ?? e}`);
+
     } finally {
       setBusy(false);
     }
