@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useGame, type Player } from "@/lib/game-store";
-import { GAME_MODES, type TopicCard } from "@/lib/game-data";
+import { type TopicCard } from "@/lib/game-data";
+import { useModes } from "@/lib/use-content";
 import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
 import { PopButton } from "@/components/GameCard";
 import { SiteNav } from "@/components/SiteNav";
@@ -66,7 +67,8 @@ function LetterCard({ letter, onDone }: { letter: string; onDone: () => void }) 
 
 function PlayPage() {
   const { mode: modeId } = Route.useParams();
-  const mode = GAME_MODES.find((m) => m.id === modeId);
+  const modes = useModes();
+  const mode = modes.find((m) => m.id === modeId);
   const { players } = useGame();
   const nav = useNavigate();
   const [introDone, setIntroDone] = useState(false);

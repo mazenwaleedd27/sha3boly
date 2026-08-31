@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useGame } from "@/lib/game-store";
-import { GAME_MODES } from "@/lib/game-data";
+import { useModes } from "@/lib/use-content";
 import { SiteNav } from "@/components/SiteNav";
 import { useEffect } from "react";
 import boy from "@/assets/kid-boy.png";
@@ -93,7 +93,7 @@ function ModesPage() {
           </div>
 
           <ul className="mt-8 space-y-4">
-            {GAME_MODES.map((m) => {
+            {modes.map((m) => {
               const s = MODE_STYLES[m.id] ?? MODE_STYLES.auction;
               return (
                 <li key={m.id}>
