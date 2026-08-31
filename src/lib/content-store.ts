@@ -4,13 +4,16 @@ import {
   ARABIC_LETTERS,
   TOPICS,
   POWER_CARDS,
+  GAME_MODES,
   type TopicCard,
   type PowerCard,
+  type GameMode,
 } from "./game-data";
 
 let topicsCache: TopicCard[] | null = null;
 let cardsCache: PowerCard[] | null = null;
 let lettersCache: string[] | null = null;
+let modesCache: GameMode[] | null = null;
 
 let loadPromise: Promise<void> | null = null;
 
@@ -19,10 +22,11 @@ export async function loadContent(force = false): Promise<void> {
   if (force) loadPromise = null;
   if (!loadPromise) {
     loadPromise = (async () => {
-      const [t, c, l] = await Promise.all([
+      const [t, c, l, m] = await Promise.all([
         supabase.from("game_topics").select("*").order("sort", { ascending: true }),
         supabase.from("game_cards").select("*").order("sort", { ascending: true }),
         supabase.from("game_letters").select("*").order("sort", { ascending: true }),
+        supabase.from("game_modes").select("*").order("sort", { ascending: true }),
       ]);
 
       if (t.data) {
@@ -44,6 +48,16 @@ export async function loadContent(force = false): Promise<void> {
       if (l.data) {
         lettersCache = l.data.map((r) => r.letter);
       }
+      if (m.data?.length) {
+        modesCache = m.data.map((r) => ({
+          id: r.mode_id,
+          name: r.name,
+          subtitle: r.subtitle,
+          emoji: r.emoji,
+          desc: r.description,
+          rules: r.rules ?? [],
+        }));
+      }
     })().catch((e) => {
       console.error("loadContent failed", e);
       loadPromise = null;
@@ -60,6 +74,30 @@ export function getPowerCards(): PowerCard[] {
 }
 export function getLetters(): string[] {
   return lettersCache?.length ? lettersCache : ARABIC_LETTERS;
+}
+
+export function getModes(): GameMode[] {
+  return modesCache?.length ? modesCache : GAME_MODES;
+}
+
+/** بيحفظ قواعد الألعاب (استبدال كامل) */
+export async function saveModes(items: GameMode[]) {
+  await supabase.from("game_modes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  if (items.length) {
+    const { error } = await supabase.from("game_modes").insert(
+      items.map((m, i) => ({
+        mode_id: m.id,
+        name: m.name,
+        subtitle: m.subtitle,
+        emoji: m.emoji,
+        description: m.desc,
+        rules: m.rules,
+        sort: i,
+      })),
+    );
+    if (error) throw error;
+  }
+  modesCache = [...items];
 }
 
 /** بيحفظ المحتوى كله في الداتابيز (استبدال كامل) */
@@ -110,6 +148,11 @@ export async function saveLetters(items: string[]) {
 
 /** رجوع للمحتوى الأصلي المكتوب في الكود */
 export async function resetAll() {
-  await Promise.all([saveTopics(TOPICS), savePowerCards(POWER_CARDS), saveLetters(ARABIC_LETTERS)]);
+  await Promise.all([
+    saveTopics(TOPICS),
+    savePowerCards(POWER_CARDS),
+    saveLetters(ARABIC_LETTERS),
+    saveModes(GAME_MODES),
+  ]);
   await loadContent(true);
 }
