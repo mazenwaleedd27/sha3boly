@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { PopButton } from "@/components/GameCard";
 import { supabase } from "@/integrations/supabase/client";
-import type { PowerCard, TopicCard } from "@/lib/game-data";
+import type { GameMode, PowerCard, TopicCard } from "@/lib/game-data";
 import {
   getLetters,
+  getModes,
+  saveModes,
   getPowerCards,
   getTopics,
   loadContent,

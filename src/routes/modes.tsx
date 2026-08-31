@@ -58,6 +58,7 @@ const MODE_STYLES: Record<
 function ModesPage() {
   const nav = useNavigate();
   const { players, setMode, resetScores } = useGame();
+  const modes = useModes();
 
   useEffect(() => {
     if (players.length < 2) nav({ to: "/start" });
