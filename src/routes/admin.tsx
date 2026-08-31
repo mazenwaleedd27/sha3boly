@@ -94,13 +94,14 @@ function AdminPage() {
 }
 
 
-type Tab = "cards" | "topics" | "letters";
+type Tab = "cards" | "topics" | "letters" | "modes";
 
 function AdminPanel() {
   const [tab, setTab] = useState<Tab>("cards");
   const [cards, setCards] = useState<PowerCard[]>([]);
   const [topics, setTopicsState] = useState<TopicCard[]>([]);
   const [letters, setLettersState] = useState<string[]>([]);
+  const [modes, setModesState] = useState<GameMode[]>([]);
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(true);
 
@@ -108,6 +109,7 @@ function AdminPanel() {
     setCards(getPowerCards());
     setTopicsState(getTopics());
     setLettersState(getLetters());
+    setModesState(getModes().map((m) => ({ ...m, rules: [...m.rules] })));
   }
 
   useEffect(() => {
@@ -123,6 +125,7 @@ function AdminPanel() {
       await savePowerCards(cards);
       await saveTopics(topics);
       await saveLetters(letters);
+      await saveModes(modes);
       setSaved(true);
       setTimeout(() => setSaved(false), 1500);
     } catch (e) {
@@ -137,6 +140,7 @@ function AdminPanel() {
     { id: "cards", label: `الكروت (${cards.length})` },
     { id: "topics", label: `المواضيع (${topics.length})` },
     { id: "letters", label: `الحروف (${letters.length})` },
+    { id: "modes", label: `قواعد الألعاب (${modes.length})` },
   ];
 
   return (
@@ -342,6 +346,73 @@ function AdminPanel() {
             </PopButton>
           </div>
         )}
+
+        {tab === "modes" && (
+          <div className="mt-5 space-y-4">
+            {modes.map((m, i) => {
+              const upd = (patch: Partial<GameMode>) =>
+                setModesState(modes.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+              return (
+                <div key={m.id || i} className="rounded-2xl bg-cream p-4 shadow">
+                  <div className="flex gap-2">
+                    <input
+                      value={m.emoji}
+                      onChange={(e) => upd({ emoji: e.target.value })}
+                      className="w-14 rounded-xl border-2 border-ink/10 bg-white px-2 py-2 text-center"
+                    />
+                    <input
+                      value={m.name}
+                      onChange={(e) => upd({ name: e.target.value })}
+                      placeholder="اسم اللعبة"
+                      className="min-w-0 flex-1 rounded-xl border-2 border-ink/10 bg-white px-3 py-2 font-bold"
+                    />
+                  </div>
+                  <input
+                    value={m.subtitle}
+                    onChange={(e) => upd({ subtitle: e.target.value })}
+                    placeholder="العنوان الفرعي"
+                    className="mt-2 w-full rounded-xl border-2 border-ink/10 bg-white px-3 py-2"
+                  />
+                  <textarea
+                    value={m.desc}
+                    onChange={(e) => upd({ desc: e.target.value })}
+                    placeholder="وصف اللعبة"
+                    rows={2}
+                    className="mt-2 w-full rounded-xl border-2 border-ink/10 bg-white px-3 py-2"
+                  />
+                  <p className="mt-3 text-sm font-black text-ink/70">📜 القواعد</p>
+                  <div className="mt-1 space-y-2">
+                    {m.rules.map((r, k) => (
+                      <div key={k} className="flex gap-2">
+                        <textarea
+                          value={r}
+                          onChange={(e) =>
+                            upd({ rules: m.rules.map((x, q) => (q === k ? e.target.value : x)) })
+                          }
+                          rows={2}
+                          className="min-w-0 flex-1 rounded-xl border-2 border-ink/10 bg-white px-3 py-2 text-sm"
+                        />
+                        <button
+                          onClick={() => upd({ rules: m.rules.filter((_, q) => q !== k) })}
+                          className="shrink-0 self-start rounded-xl bg-red-500 px-3 py-2 text-sm font-bold text-white"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-2">
+                    <PopButton variant="ghost" onClick={() => upd({ rules: [...m.rules, ""] })}>
+                      + قاعدة
+                    </PopButton>
+                    <span className="text-xs font-bold text-ink/50">ID: {m.id}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
       </div>
     </div>
   );
