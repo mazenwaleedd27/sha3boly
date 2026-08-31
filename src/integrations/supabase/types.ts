@@ -65,6 +65,45 @@ export type Database = {
         }
         Relationships: []
       }
+      game_modes: {
+        Row: {
+          created_at: string
+          description: string
+          emoji: string
+          id: string
+          mode_id: string
+          name: string
+          rules: string[]
+          sort: number
+          subtitle: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          emoji?: string
+          id?: string
+          mode_id: string
+          name: string
+          rules?: string[]
+          sort?: number
+          subtitle?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          emoji?: string
+          id?: string
+          mode_id?: string
+          name?: string
+          rules?: string[]
+          sort?: number
+          subtitle?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       game_topics: {
         Row: {
           category: string
