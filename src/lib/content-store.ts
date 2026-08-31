@@ -80,11 +80,14 @@ export function getModes(): GameMode[] {
   return modesCache?.length ? modesCache : GAME_MODES;
 }
 
-/** بيحفظ قواعد الألعاب (استبدال كامل) */
+/** بيحفظ قواعد الألعاب (upsert على mode_id) */
 export async function saveModes(items: GameMode[]) {
-  await supabase.from("game_modes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-  if (items.length) {
-    const { error } = await supabase.from("game_modes").insert(
+  const { data: sess } = await supabase.auth.getSession();
+  if (!sess.session) throw new Error("لازم تسجّل دخول بحساب الأدمن الأول");
+
+  const keep = items.map((m) => m.id);
+  if (keep.length) {
+    const { error } = await supabase.from("game_modes").upsert(
       items.map((m, i) => ({
         mode_id: m.id,
         name: m.name,
@@ -94,11 +97,24 @@ export async function saveModes(items: GameMode[]) {
         rules: m.rules,
         sort: i,
       })),
+      { onConflict: "mode_id" },
     );
+    if (error) throw error;
+    const { error: delErr } = await supabase
+      .from("game_modes")
+      .delete()
+      .not("mode_id", "in", `(${keep.map((k) => `"${k}"`).join(",")})`);
+    if (delErr) throw delErr;
+  } else {
+    const { error } = await supabase
+      .from("game_modes")
+      .delete()
+      .neq("id", "00000000-0000-0000-0000-000000000000");
     if (error) throw error;
   }
   modesCache = [...items];
 }
+
 
 /** بيحفظ المحتوى كله في الداتابيز (استبدال كامل) */
 export async function saveTopics(items: TopicCard[]) {
