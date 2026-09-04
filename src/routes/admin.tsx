@@ -105,7 +105,8 @@ function AdminPage() {
 
 type Tab = "cards" | "topics" | "letters" | "modes";
 
-function AdminPanel() {
+function AdminPanel({ password }: { password: string }) {
+  const save = useServerFn(saveAdminContent);
   const [tab, setTab] = useState<Tab>("cards");
   const [cards, setCards] = useState<PowerCard[]>([]);
   const [topics, setTopicsState] = useState<TopicCard[]>([]);
@@ -128,23 +129,30 @@ function AdminPanel() {
     });
   }, []);
 
+  async function persist(payload: {
+    cards: PowerCard[];
+    topics: TopicCard[];
+    letters: string[];
+    modes: GameMode[];
+  }) {
+    await save({ data: { password, ...payload } });
+    await loadContent(true);
+  }
+
   async function saveAll() {
     setBusy(true);
     try {
-      await savePowerCards(cards);
-      await saveTopics(topics);
-      await saveLetters(letters);
-      await saveModes(modes);
+      await persist({ cards, topics, letters, modes });
       setSaved(true);
       setTimeout(() => setSaved(false), 1500);
     } catch (e: any) {
       console.error(e);
       alert(`حصلت مشكلة في الحفظ: ${e?.message ?? e}`);
-
     } finally {
       setBusy(false);
     }
   }
+
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "cards", label: `الكروت (${cards.length})` },
