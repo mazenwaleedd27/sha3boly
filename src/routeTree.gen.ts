@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as ModesRouteImport } from './routes/modes'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlayModeRouteImport } from './routes/play.$mode'
@@ -24,11 +23,6 @@ const StartRoute = StartRouteImport.update({
 const ModesRoute = ModesRouteImport.update({
   id: '/modes',
   path: '/modes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -50,7 +44,6 @@ const PlayModeRoute = PlayModeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/auth': typeof AuthRoute
   '/modes': typeof ModesRoute
   '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
@@ -58,7 +51,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/auth': typeof AuthRoute
   '/modes': typeof ModesRoute
   '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
@@ -67,30 +59,21 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/auth': typeof AuthRoute
   '/modes': typeof ModesRoute
   '/start': typeof StartRoute
   '/play/$mode': typeof PlayModeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/modes' | '/start' | '/play/$mode'
+  fullPaths: '/' | '/admin' | '/modes' | '/start' | '/play/$mode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/modes' | '/start' | '/play/$mode'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/auth'
-    | '/modes'
-    | '/start'
-    | '/play/$mode'
+  to: '/' | '/admin' | '/modes' | '/start' | '/play/$mode'
+  id: '__root__' | '/' | '/admin' | '/modes' | '/start' | '/play/$mode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  AuthRoute: typeof AuthRoute
   ModesRoute: typeof ModesRoute
   StartRoute: typeof StartRoute
   PlayModeRoute: typeof PlayModeRoute
@@ -110,13 +93,6 @@ declare module '@tanstack/react-router' {
       path: '/modes'
       fullPath: '/modes'
       preLoaderRoute: typeof ModesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -146,7 +122,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  AuthRoute: AuthRoute,
   ModesRoute: ModesRoute,
   StartRoute: StartRoute,
   PlayModeRoute: PlayModeRoute,

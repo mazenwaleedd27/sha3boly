@@ -1,20 +1,24 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { PopButton } from "@/components/GameCard";
-import { supabase } from "@/integrations/supabase/client";
-import type { GameMode, PowerCard, TopicCard } from "@/lib/game-data";
+import { useServerFn } from "@tanstack/react-start";
+import { saveAdminContent, verifyAdminPassword } from "@/lib/admin.functions";
+import {
+  ARABIC_LETTERS,
+  GAME_MODES,
+  POWER_CARDS,
+  TOPICS,
+  type GameMode,
+  type PowerCard,
+  type TopicCard,
+} from "@/lib/game-data";
 import {
   getLetters,
   getModes,
-  saveModes,
   getPowerCards,
   getTopics,
   loadContent,
-  resetAll,
-  saveLetters,
-  savePowerCards,
-  saveTopics,
 } from "@/lib/content-store";
 
 export const Route = createFileRoute("/admin")({
@@ -33,56 +37,60 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
+const PW_KEY = "shaabouly_admin_pw";
+
 function AdminPage() {
-  const navigate = useNavigate();
-  const [state, setState] = useState<"loading" | "ok" | "denied">("loading");
+  const verify = useServerFn(verifyAdminPassword);
+  const [password, setPassword] = useState<string | null>(null);
+  const [input, setInput] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    let alive = true;
-    (async () => {
-      const { data: userRes } = await supabase.auth.getUser();
-      if (!alive) return;
-      if (!userRes.user) {
-        navigate({ to: "/auth", replace: true });
+    const saved = sessionStorage.getItem(PW_KEY);
+    if (saved) setPassword(saved);
+  }, []);
+
+  async function submit() {
+    setBusy(true);
+    setErr(null);
+    try {
+      const { ok } = await verify({ data: { password: input } });
+      if (!ok) {
+        setErr("الباسورد غلط");
         return;
       }
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userRes.user.id);
-      if (!alive) return;
-      setState(roles?.some((r) => r.role === "admin") ? "ok" : "denied");
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [navigate]);
-
-  if (state === "loading") {
-    return (
-      <div className="min-h-screen bg-page">
-        <SiteNav />
-        <p className="py-20 text-center font-bold text-ink">جاري التحميل...</p>
-      </div>
-    );
+      sessionStorage.setItem(PW_KEY, input);
+      setPassword(input);
+    } catch {
+      setErr("حصلت مشكلة، جرّب تاني");
+    } finally {
+      setBusy(false);
+    }
   }
 
-  if (state === "denied") {
+  if (!password) {
     return (
       <div className="min-h-screen bg-page">
         <SiteNav />
-        <div className="mx-auto max-w-sm px-4 py-16">
-          <div className="rounded-3xl bg-cream p-6 text-center shadow-xl">
-            <h1 className="font-display text-2xl font-black text-ink">🚫 غير مسموح</h1>
-            <p className="mt-2 text-sm text-ink/70">الحساب ده مش أدمن.</p>
-            <PopButton
-              className="mt-4 w-full"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                navigate({ to: "/auth", replace: true });
+        <div className="mx-auto max-w-sm px-4 py-14">
+          <div className="rounded-3xl bg-cream p-6 shadow-xl">
+            <h1 className="text-center font-display text-2xl font-black text-ink">🔐 لوحة التحكم</h1>
+            <p className="mt-2 text-center text-sm text-ink/70">اكتب الباسورد عشان تدخل</p>
+            <input
+              type="password"
+              dir="ltr"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") void submit();
               }}
-            >
-              تسجيل خروج
+              placeholder="Password"
+              className="mt-5 w-full rounded-2xl border-2 border-ink/10 bg-white px-4 py-3 text-center outline-none focus:border-primary"
+            />
+            {err && <p className="mt-3 text-center text-sm font-bold text-red-600">{err}</p>}
+            <PopButton className="mt-4 w-full" onClick={() => void submit()}>
+              {busy ? "..." : "دخول"}
             </PopButton>
           </div>
         </div>
@@ -90,13 +98,15 @@ function AdminPage() {
     );
   }
 
-  return <AdminPanel />;
+  return <AdminPanel password={password} />;
 }
+
 
 
 type Tab = "cards" | "topics" | "letters" | "modes";
 
-function AdminPanel() {
+function AdminPanel({ password }: { password: string }) {
+  const save = useServerFn(saveAdminContent);
   const [tab, setTab] = useState<Tab>("cards");
   const [cards, setCards] = useState<PowerCard[]>([]);
   const [topics, setTopicsState] = useState<TopicCard[]>([]);
@@ -119,23 +129,30 @@ function AdminPanel() {
     });
   }, []);
 
+  async function persist(payload: {
+    cards: PowerCard[];
+    topics: TopicCard[];
+    letters: string[];
+    modes: GameMode[];
+  }) {
+    await save({ data: { password, ...payload } });
+    await loadContent(true);
+  }
+
   async function saveAll() {
     setBusy(true);
     try {
-      await savePowerCards(cards);
-      await saveTopics(topics);
-      await saveLetters(letters);
-      await saveModes(modes);
+      await persist({ cards, topics, letters, modes });
       setSaved(true);
       setTimeout(() => setSaved(false), 1500);
     } catch (e: any) {
       console.error(e);
       alert(`حصلت مشكلة في الحفظ: ${e?.message ?? e}`);
-
     } finally {
       setBusy(false);
     }
   }
+
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "cards", label: `الكروت (${cards.length})` },
@@ -159,12 +176,23 @@ function AdminPanel() {
               onClick={async () => {
                 if (confirm("هترجع كل المحتوى للأصلي؟")) {
                   setBusy(true);
-                  await resetAll();
-                  hydrate();
-                  setBusy(false);
+                  try {
+                    await persist({
+                      cards: POWER_CARDS,
+                      topics: TOPICS,
+                      letters: ARABIC_LETTERS,
+                      modes: GAME_MODES,
+                    });
+                    hydrate();
+                  } catch (e: any) {
+                    alert(`حصلت مشكلة: ${e?.message ?? e}`);
+                  } finally {
+                    setBusy(false);
+                  }
                 }
               }}
             >
+
               رجوع للأصلي
             </PopButton>
           </div>
