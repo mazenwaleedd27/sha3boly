@@ -176,12 +176,23 @@ function AdminPanel({ password }: { password: string }) {
               onClick={async () => {
                 if (confirm("هترجع كل المحتوى للأصلي؟")) {
                   setBusy(true);
-                  await resetAll();
-                  hydrate();
-                  setBusy(false);
+                  try {
+                    await persist({
+                      cards: POWER_CARDS,
+                      topics: TOPICS,
+                      letters: ARABIC_LETTERS,
+                      modes: GAME_MODES,
+                    });
+                    hydrate();
+                  } catch (e: any) {
+                    alert(`حصلت مشكلة: ${e?.message ?? e}`);
+                  } finally {
+                    setBusy(false);
+                  }
                 }
               }}
             >
+
               رجوع للأصلي
             </PopButton>
           </div>
