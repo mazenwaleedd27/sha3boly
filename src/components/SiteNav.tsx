@@ -1,24 +1,8 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { FullscreenButton } from "./FullscreenButton";
-import { supabase } from "@/integrations/supabase/client";
 
 export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
-  const navigate = useNavigate();
-  const [signedIn, setSignedIn] = useState(false);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setSignedIn(!!session);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  }
 
 
   return (
