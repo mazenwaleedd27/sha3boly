@@ -763,14 +763,63 @@ function WinnerScreen({
 }
 
 function FinishButtons() {
+  const { players } = useGame();
+  const [showFinal, setShowFinal] = useState(false);
+
+  const ranked = [...players].sort((a, b) => b.score - a.score);
+  const top = ranked[0];
+  const winners = top ? ranked.filter((p) => p.score === top.score) : [];
+
+  if (showFinal) {
+    return (
+      <div className="space-y-4 text-center">
+        <div className="card-splash rounded-3xl p-4 shadow-xl">
+          <div className="rounded-2xl bg-cream px-4 py-8">
+            <div className="text-7xl">🏆</div>
+            <p className="mt-2 text-sm font-bold text-muted-foreground">كسبان اللعبة</p>
+            <h2 className="mt-1 text-3xl text-primary leading-tight">
+              {winners.length ? winners.map((w) => w.name).join(" و ") : "مفيش لاعبين"}
+            </h2>
+            {top && <p className="text-lg font-bold text-ink">{top.score} نقطة</p>}
+          </div>
+        </div>
+
+        <div className="rounded-3xl bg-card p-4 space-y-2">
+          {ranked.map((p, i) => (
+            <div key={p.id} className="flex items-center justify-between rounded-2xl bg-muted px-4 py-2">
+              <span className="font-bold text-ink">{i + 1}. {p.name}</span>
+              <span className="font-black text-primary">{p.score}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => setShowFinal(false)}
+            className="rounded-2xl bg-secondary px-4 py-3 text-center font-bold text-secondary-foreground btn-pop btn-pop-active"
+          >
+            رجوع
+          </button>
+          <Link to="/" className="rounded-2xl bg-muted px-4 py-3 text-center font-bold text-ink btn-pop btn-pop-active">
+            الرئيسية
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 gap-2 pt-2">
       <Link to="/modes" className="rounded-2xl bg-secondary px-4 py-3 text-center font-bold text-secondary-foreground btn-pop btn-pop-active">
         طريقة تانية
       </Link>
-      <Link to="/" className="rounded-2xl bg-muted px-4 py-3 text-center font-bold text-ink btn-pop btn-pop-active">
+      <button
+        onClick={() => setShowFinal(true)}
+        className="rounded-2xl bg-muted px-4 py-3 text-center font-bold text-ink btn-pop btn-pop-active"
+      >
         خلاص
-      </Link>
+      </button>
     </div>
   );
 }
+
