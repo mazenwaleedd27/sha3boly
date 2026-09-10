@@ -395,9 +395,8 @@ function AuctionMode() {
         </div>
         {round < 5 ? (
           <PopButton onClick={nextRound} className="w-full">الجولة الجاية ←</PopButton>
-        ) : (
-          <FinishButtons />
-        )}
+        ) : null}
+        <FinishButtons />
       </div>
     );
   }
@@ -465,6 +464,7 @@ function SurvivalMode() {
           ))}
         </div>
       </div>
+      <DoneButton />
     </div>
   );
 }
@@ -567,6 +567,7 @@ function PingPongMode() {
           <PopButton variant="accent" onClick={() => declareWinner(b)}>{b.name} كسب ✓</PopButton>
         </div>
       </div>
+      <DoneButton />
     </div>
   );
 }
@@ -642,6 +643,7 @@ function HatTrickMode() {
           ))}
         </div>
       </div>
+      <DoneButton />
     </div>
   );
 }
@@ -719,6 +721,7 @@ function ChainMode() {
           ))}
         </div>
       </div>
+      <DoneButton />
     </div>
   );
 }
