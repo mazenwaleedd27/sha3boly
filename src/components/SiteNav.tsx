@@ -22,7 +22,6 @@ export function SiteNav({ active = "home" }: { active?: "home" | "play" }) {
           </li>
           <li><a href="#story" className="opacity-90 hover:opacity-100">قصتي</a></li>
           <li><a href="#about" className="opacity-90 hover:opacity-100">عن اللعبة</a></li>
-          <li><Link to="/cards" className="opacity-90 hover:opacity-100">الكروت</Link></li>
           <li>
             <Link to="/admin" className="opacity-90 hover:opacity-100">لوحة التحكم</Link>
           </li>
