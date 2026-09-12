@@ -17,7 +17,7 @@ export function FrameCard({
       style={{ aspectRatio: "1024 / 1500" }}
     >
       <img
-        src={frame.url}
+        src={frameUrl}
         alt=""
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full select-none"
