@@ -42,14 +42,32 @@ function Home() {
                 alt="شعبولي"
                 className="mx-auto h-44 w-auto drop-shadow-[0_6px_0_rgba(0,0,0,0.25)] md:mx-0"
               />
-              <p className="mt-4 text-2xl font-black text-ink">
-                لعبة الحروف والذكاء والضحك العائلية
-              </p>
-              <p className="mt-3 text-lg font-bold text-ink/80 leading-relaxed">
-                اجمع بطاقات الحروف بسرعة،
-                <br />
-                واستخدم بطاقات الحركة لتفوز!
-              </p>
+              <div className="mt-4 rounded-3xl bg-white/80 p-5 text-right shadow-lg">
+                <p className="text-xl font-black text-nav leading-relaxed">
+                  🌊 أهلاً بيك! أنا بحر!
+                </p>
+                <p className="mt-3 text-lg font-bold text-ink/85 leading-loose">
+                  قائد شعبولي الرسمي… أو خلينا نقول لسه قائد تحت التدريب عشان مازن لسه بيعلّمني الشغلانة 😂
+                </p>
+                <p className="mt-3 text-lg font-bold text-ink/85 leading-loose">
+                  بس خد بالك 👀 لعبة شعبولي حاليًا تحت التجربة، وبما إنك وصلت لحد هنا… فأنت مش مجرد لاعب، أنت كده بقيت جزء مهم جدًا من رحلة شعبولي قبل ما تطلع للنور! 🎮🔥
+                </p>
+                <p className="mt-3 text-lg font-black text-ink leading-relaxed">
+                  مهمتك بقى بسيطة جدًا:
+                </p>
+                <ul className="mt-2 space-y-1 text-lg font-bold text-ink/85">
+                  <li>🎲 جرّب اللعبة</li>
+                  <li>😂 العب واتخانق مع صحابك شوية</li>
+                  <li>🧠 شوف إيه اللي عاجبك وإيه اللي محتاج يتظبط</li>
+                  <li>💡 وبعدها قول لـ مازن رأيك واقتراحاتك.</li>
+                </ul>
+                <p className="mt-3 text-lg font-bold text-ink/85 leading-loose">
+                  وبالمناسبة… اقتراحاتك مهمة جدًا، يعني ممكن اقتراح منك يخلّي اللعبة أحسن بكتير قبل النشر. 👀
+                </p>
+                <p className="mt-3 text-xl font-black text-nav leading-relaxed">
+                  فـ متكسفش… قول رأيك بصراحة 😂 مستني رايك واقتراحاتك! 🃏🔥
+                </p>
+              </div>
 
               <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-3 rounded-3xl bg-white/70 p-3 shadow">
                 <Stat icon="👥" top="2-12" bottom="لاعبين" />
