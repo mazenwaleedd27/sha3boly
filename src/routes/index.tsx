@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
-import logoAsset from "@/assets/logo.png.asset.json";
+import logoImg from "@/assets/logo.png";
 import mazenChar from "@/assets/mazen-character.png";
 
 export const Route = createFileRoute("/")({
@@ -38,7 +38,7 @@ function Home() {
           <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2">
             <div className="text-center md:text-right">
               <img
-                src={logoAsset.url}
+                src={logoImg}
                 alt="شعبولي"
                 className="mx-auto h-44 w-auto drop-shadow-[0_6px_0_rgba(0,0,0,0.25)] md:mx-0"
               />

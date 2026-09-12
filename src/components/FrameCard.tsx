@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import frame from "@/assets/card-frame.png.asset.json";
+import frameUrl from "@/assets/card-frame.png";
 
 // كارت بإطار splash ملون مع دائرة صفرا في النص فوق — الصورة جاية من اللي رفعها المستخدم
 export function FrameCard({
@@ -17,7 +17,7 @@ export function FrameCard({
       style={{ aspectRatio: "1024 / 1500" }}
     >
       <img
-        src={frame.url}
+        src={frameUrl}
         alt=""
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full select-none"
