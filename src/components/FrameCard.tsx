@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import frame from "@/assets/card-frame.png.asset.json";
+import frameUrl from "@/assets/card-frame.png";
 
 // كارت بإطار splash ملون مع دائرة صفرا في النص فوق — الصورة جاية من اللي رفعها المستخدم
 export function FrameCard({
