@@ -7,6 +7,7 @@ import { pickLetter, pickTopic, pickTopics } from "@/lib/random";
 import { PopButton } from "@/components/GameCard";
 import { SiteNav } from "@/components/SiteNav";
 import { GameIntro } from "@/components/GameIntro";
+import { UseCardButton } from "@/components/UseCardButton";
 
 export const Route = createFileRoute("/play/$mode")({
   head: () => ({ meta: [{ title: "اللعب — شعبولي" }] }),
