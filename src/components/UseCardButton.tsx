@@ -27,7 +27,6 @@ export function UseCardButton() {
   const { players, addScore, removeCard, setPlayers } = useGame();
   const [open, setOpen] = useState(false);
   const [playerId, setPlayerId] = useState<string | null>(null);
-  const [revealed, setRevealed] = useState(false);
   const [targetId, setTargetId] = useState<string>("");
   const [done, setDone] = useState<string | null>(null);
 
@@ -37,7 +36,12 @@ export function UseCardButton() {
   function reset() {
     setOpen(false);
     setPlayerId(null);
-    setRevealed(false);
+    setTargetId("");
+    setDone(null);
+  }
+
+  function backToList() {
+    setPlayerId(null);
     setTargetId("");
     setDone(null);
   }
@@ -89,68 +93,75 @@ export function UseCardButton() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-16 left-3 z-30 rounded-full bg-primary px-4 py-3 text-sm font-black text-primary-foreground shadow-lg"
+        className="fixed bottom-16 left-3 z-30 rounded-full bg-primary px-6 py-4 text-lg font-black text-primary-foreground shadow-lg"
         style={{ marginBottom: "env(safe-area-inset-bottom)" }}
       >
-        🃏 استخدم كارت
+        🃏 الكروت
       </button>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
-      <div className="max-h-[85dvh] w-full max-w-sm overflow-y-auto rounded-3xl bg-card p-4 space-y-3">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-3">
+      <div className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl bg-card p-5 space-y-4">
         {done ? (
           <>
-            <h3 className="text-center text-xl font-black text-primary">تم ✅</h3>
-            <p className="text-center font-bold text-ink leading-relaxed">{done}</p>
-            <PopButton className="w-full" onClick={reset}>تمام</PopButton>
+            <h3 className="text-center text-2xl font-black text-primary">تم ✅</h3>
+            <p className="text-center text-lg font-bold text-ink leading-relaxed">{done}</p>
+            <PopButton className="w-full" onClick={backToList}>تمام</PopButton>
           </>
         ) : !player ? (
           <>
-            <h3 className="text-center text-xl font-black text-primary">مين هيستخدم كارته؟</h3>
-            <div className="flex flex-wrap justify-center gap-2">
+            <h3 className="text-center text-2xl font-black text-primary">🃏 كروت اللاعبين</h3>
+            <p className="text-center text-sm font-bold text-ink/70">
+              كل لاعب ياخد الموبايل ويدوس على الكارت بتاعه
+            </p>
+            <div className="space-y-3">
               {players.map((p) => (
-                <button
+                <div
                   key={p.id}
-                  disabled={p.cards.length === 0}
-                  onClick={() => setPlayerId(p.id)}
-                  className="rounded-full bg-muted px-4 py-2 text-sm font-bold text-ink disabled:opacity-40"
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-muted p-3"
                 >
-                  {p.name} {p.cards.length ? "🃏" : "—"}
-                </button>
+                  <span className="min-w-0 flex-1 truncate text-lg font-black text-ink">
+                    {p.name}
+                  </span>
+                  {p.cards.length > 0 ? (
+                    <button
+                      onClick={() => setPlayerId(p.id)}
+                      className="shrink-0 rounded-full bg-primary px-5 py-3 text-base font-black text-primary-foreground shadow"
+                    >
+                      🃏 الكارت بتاعك
+                    </button>
+                  ) : (
+                    <span className="shrink-0 rounded-full bg-ink/10 px-4 py-2 text-sm font-bold text-ink/50">
+                      مفيش كارت
+                    </span>
+                  )}
+                </div>
               ))}
             </div>
-            <PopButton variant="ghost" className="w-full" onClick={reset}>إلغاء</PopButton>
+            <PopButton variant="ghost" className="w-full" onClick={reset}>إغلاق</PopButton>
           </>
         ) : !card ? (
           <>
-            <p className="text-center font-bold text-ink">{player.name} مش معاه كارت</p>
-            <PopButton className="w-full" onClick={reset}>تمام</PopButton>
-          </>
-        ) : !revealed ? (
-          <>
-            <h3 className="text-center text-xl font-black text-primary">{player.name}</h3>
-            <p className="text-center text-sm font-bold text-ink/80">
-              خد الموبايل واضغط عشان تشوف كارتك
-            </p>
-            <PopButton className="w-full" onClick={() => setRevealed(true)}>اكشف الكارت 👀</PopButton>
-            <PopButton variant="ghost" className="w-full" onClick={reset}>رجوع</PopButton>
+            <p className="text-center text-lg font-bold text-ink">{player.name} مش معاه كارت</p>
+            <PopButton className="w-full" onClick={backToList}>رجوع</PopButton>
           </>
         ) : (
           <>
+            <h3 className="text-center text-2xl font-black text-primary">{player.name}</h3>
             <div className="card-splash rounded-3xl p-3">
-              <div className="relative rounded-2xl bg-cream px-5 pb-6 pt-12 text-center">
-                <div className="absolute -top-6 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-2xl shadow-lg">
+              <div className="relative rounded-2xl bg-cream px-5 pb-6 pt-14 text-center">
+                <div className="absolute -top-7 left-1/2 flex h-20 w-20 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-accent text-3xl shadow-lg">
                   {card.emoji}
                 </div>
-                <p className="text-[11px] font-black uppercase tracking-wider text-primary/80">
+                <p className="text-xs font-black uppercase tracking-wider text-primary/80">
                   {card.kind === "power" ? "كارت قوة" : "كارت تلبيس"}
                 </p>
-                <h3 className="mt-2 text-xl font-black text-primary leading-tight">{card.name}</h3>
-                <p className="mt-2 text-sm font-bold text-ink/80 leading-snug">{card.desc}</p>
+                <h3 className="mt-2 text-2xl font-black text-primary leading-tight">{card.name}</h3>
+                <p className="mt-3 text-base font-bold text-ink/80 leading-relaxed">{card.desc}</p>
                 {autoEffectText(card) && (
-                  <p className="mt-2 text-xs font-bold text-secondary">{autoEffectText(card)}</p>
+                  <p className="mt-3 text-sm font-bold text-secondary">{autoEffectText(card)}</p>
                 )}
               </div>
             </div>
@@ -163,7 +174,7 @@ export function UseCardButton() {
                     <button
                       key={p.id}
                       onClick={() => setTargetId(p.id)}
-                      className={`rounded-full px-4 py-2 text-sm font-bold ${
+                      className={`rounded-full px-5 py-3 text-base font-bold ${
                         p.id === targetId ? "bg-primary text-primary-foreground" : "bg-muted text-ink"
                       }`}
                     >
@@ -182,7 +193,7 @@ export function UseCardButton() {
             >
               استخدم الكارت 🔥
             </PopButton>
-            <PopButton variant="ghost" className="w-full" onClick={reset}>إلغاء</PopButton>
+            <PopButton variant="ghost" className="w-full" onClick={backToList}>رجوع</PopButton>
           </>
         )}
       </div>
