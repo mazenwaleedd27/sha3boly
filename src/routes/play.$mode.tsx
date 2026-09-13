@@ -105,6 +105,7 @@ function PlayPage() {
           </LetterModeContext.Provider>
         )}
       </div>
+      {introDone && <UseCardButton />}
       <Scoreboard />
     </main>
   );
