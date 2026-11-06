@@ -49,7 +49,7 @@ export async function loadContent(force = false): Promise<void> {
         lettersCache = l.data.map((r) => r.letter);
       }
       if (m.data?.length) {
-        modesCache = m.data.map((r) => ({
+        const databaseModes = m.data.map((r) => ({
           id: r.mode_id,
           name: r.name,
           subtitle: r.subtitle,
@@ -57,6 +57,13 @@ export async function loadContent(force = false): Promise<void> {
           desc: r.description,
           rules: r.rules ?? [],
         }));
+        const featuredMode = GAME_MODES.find((mode) => mode.id === "arz3");
+        modesCache = featuredMode
+          ? [
+              databaseModes.find((mode) => mode.id === featuredMode.id) ?? featuredMode,
+              ...databaseModes.filter((mode) => mode.id !== featuredMode.id),
+            ]
+          : databaseModes;
       }
     })().catch((e) => {
       console.error("loadContent failed", e);

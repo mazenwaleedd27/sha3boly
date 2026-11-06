@@ -9,7 +9,14 @@ import girl from "@/assets/kid-girl.png";
 
 export const Route = createFileRoute("/modes")({
   head: () => ({
-    meta: [{ title: "اختر طريقة اللعب — شعبولي" }],
+    meta: [
+      { title: "اختر لعبة — شعبولي" },
+      { name: "description", content: "اختاروا من ألعاب شعبولي وابدأوا اللعب مع بعض من موبايل واحد." },
+      { property: "og:title", content: "اختاروا لعبة — شعبولي" },
+      { property: "og:description", content: "المزاد، البقاء، واللعب بالنقاط في شعبولي." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
   component: ModesPage,
 });
@@ -24,6 +31,13 @@ const MODE_STYLES: Record<
     title: "text-pink-600",
     icon: "bg-gradient-to-br from-pink-500 to-rose-600",
     emoji: "🎯",
+  },
+  arz3: {
+    bg: "bg-white",
+    ring: "ring-primary/50",
+    title: "text-primary",
+    icon: "bg-primary",
+    emoji: "🟨",
   },
   survival: {
     bg: "bg-sky-50",
