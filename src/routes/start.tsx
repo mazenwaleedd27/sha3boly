@@ -8,7 +8,14 @@ import girl from "@/assets/kid-girl.png";
 
 export const Route = createFileRoute("/start")({
   head: () => ({
-    meta: [{ title: "ابدأ اللعب — شعبولي" }],
+    meta: [
+      { title: "إضافة اللاعبين — شعبولي" },
+      { name: "description", content: "أضيفوا من لاعبين إلى 12 لاعبًا وجهزوا لعبة شعبولي على موبايل واحد." },
+      { property: "og:title", content: "إضافة اللاعبين — شعبولي" },
+      { property: "og:description", content: "جهزوا أسماء اللاعبين قبل اختيار اللعبة." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
   component: Start,
 });

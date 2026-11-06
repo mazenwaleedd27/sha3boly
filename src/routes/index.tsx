@@ -7,6 +7,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "شعبولي — لعبة الحروف والذكاء والضحك العائلية" },
+      { name: "og:type", content: "website" },
       { name: "description", content: "شعبولي: لعبة حروف عربية للعائلة والأصحاب. اجمع البطاقات، استخدم كروت القوة والحماية، وكن الأسرع." },
       { property: "og:title", content: "شعبولي — لعبة الجماعة" },
       { property: "og:description", content: "موبايل واحد، 5 طرق لعب، كروت قوة وتلبيس، وضحك ومنافسة." },
